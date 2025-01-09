@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Target
   - Start
+  - Obstacle
+  - Road
+  - Ground
   layers:
   - Default
   - TransparentFX
@@ -15,8 +18,8 @@ TagManager:
   - UI
   - Body
   - Wheel
-  - 
-  - 
+  - Obstacle
+  - Ground
   - 
   - 
   - 
