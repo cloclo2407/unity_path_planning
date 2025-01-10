@@ -20,8 +20,8 @@ public class CarAI : MonoBehaviour
         carCollider = gameObject.transform.Find("Colliders/ColliderBottom").gameObject.GetComponent<BoxCollider>();
         // get the car controller
         m_Car = GetComponent<CarController>();
-        mapManager = FindObjectOfType<GameManagerA1>().mapManager;
-        obstacleMap = FindObjectOfType<ObstacleMapVisualizer>().ObstacleMap;
+        mapManager = FindFirstObjectByType<GameManagerA1>().mapManager;
+        obstacleMap = FindFirstObjectByType<ObstacleMapVisualizer>().ObstacleMap;
 
 
         // Plan your path here
