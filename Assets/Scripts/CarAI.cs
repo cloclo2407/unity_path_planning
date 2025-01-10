@@ -25,10 +25,12 @@ public class CarAI : MonoBehaviour
 
 
         // Plan your path here
-        Vector3 someLocalPosition = mapManager.transform.InverseTransformPoint(transform.position); // Position of car w.r.p map coordinate origin (not world global)
+        Vector3 someLocalPosition =
+            mapManager.transform
+                .InverseTransformPoint(transform
+                    .position); // Position of car w.r.p map coordinate origin (not world global)
         // transform.localRotation;  Rotation w.r.p map coordinate origin (not world global)
 
-     
 
         // Replace the code below that makes a random path
         // ...
@@ -62,7 +64,8 @@ public class CarAI : MonoBehaviour
 
         RaycastHit hit;
         float maxRange = 500f;
-        if (Physics.Raycast(transform.position + transform.up, transform.TransformDirection(Vector3.forward), out hit, maxRange))
+        if (Physics.Raycast(transform.position + transform.up, transform.TransformDirection(Vector3.forward), out hit,
+                maxRange))
         {
             Vector3 closestObstacleInFront = transform.TransformDirection(Vector3.forward) * hit.distance;
             Debug.DrawRay(transform.position, closestObstacleInFront, Color.yellow);
@@ -82,41 +85,40 @@ public class CarAI : MonoBehaviour
 
 
         // // Check and print traversability of currect position
-        Vector3 myLocalPosition = Vector3.zero; //mapManager.grid.WorldToLocal(transform.position); // Position of car w.r.p map coordinate origin (not world global)
+        Vector3
+            myLocalPosition =
+                Vector3.zero; //mapManager.grid.WorldToLocal(transform.position); // Position of car w.r.p map coordinate origin (not world global)
         Debug.Log(obstacleMap.IsLocalPointTraversable(myLocalPosition));
     }
 
 
     private void FixedUpdate()
     {
-        // How to calculate if a physics collider overlaps another.
-        var exampleObstacle = obstacleMap.obstacleObjects[0];
-
         var globalPosition = transform.position;
 
-        bool overlapped = Physics.ComputePenetration(
-            carCollider,
-            globalPosition,
-            transform.rotation, // Use global position 
-            exampleObstacle.GetComponent<MeshCollider>(), // Can take any collider and "project" it using position and rotation vectors.
-            exampleObstacle.transform.position,
-            exampleObstacle.transform.rotation,
-            out var direction,
-            out var distance
-        );
+        // How to calculate if something intersects the location of a box
+        var overlapped = Physics.CheckBox(
+            center: new Vector3(3f, 0f, 3f), // Global position to check
+            halfExtents: new Vector3(1f, 0.1f, 1f)); // Size of box (+- Vec in each direction)
+
         // 'out's give shortest direction and distance to "uncollide" two objects.
-        if (overlapped || distance > 0)
+        if (overlapped)
         {
-            // Means collider "inside" another, i.e the collider would crash in this position.
+            // Do your thing
         }
-        // For more details https:docs.unity3d.com/ScriptReference/Physics.ComputePenetration.html
+        // For more details https:docs.unity3d.com/ScriptReference/Physics.CheckBox.html
+        // The Physics class has a bunch of static classes for all kinds of checks.
         ///////////////////////////
 
         // // This is how you access information about the terrain from a simulated laser range finder
         // // It might be wise to use this for error recovery, but do most of the planning before the race clock starts
         RaycastHit hit;
         float maxRange = 50f;
-        if (Physics.Raycast(globalPosition + transform.up, transform.TransformDirection(Vector3.forward), out hit, maxRange))
+        if (Physics.Raycast(
+                globalPosition + transform.up,
+                transform.TransformDirection(Vector3.forward),
+                out hit,
+                maxRange))
         {
             Vector3 closestObstacleInFront = transform.TransformDirection(Vector3.forward) * hit.distance;
             Debug.DrawRay(globalPosition, closestObstacleInFront, Color.yellow);
