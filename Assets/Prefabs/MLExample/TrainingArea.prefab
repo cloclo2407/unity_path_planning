@@ -826,15 +826,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 765035893983080517, guid: 3a78928e20ca90144a80b9ca1d24848f, type: 3}
       propertyPath: m_BrainParameters.VectorObservationSize
-      value: 13
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 765035893983080517, guid: 3a78928e20ca90144a80b9ca1d24848f, type: 3}
       propertyPath: 'm_BrainParameters.VectorActionSize.Array.data[0]'
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 765035893983080517, guid: 3a78928e20ca90144a80b9ca1d24848f, type: 3}
       propertyPath: m_BrainParameters.m_ActionSpec.m_NumContinuousActions
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2524702483269903275, guid: 3a78928e20ca90144a80b9ca1d24848f, type: 3}
       propertyPath: target
