@@ -824,26 +824,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8907645743295841233}
     m_Modifications:
-    - target: {fileID: 765035893983080517, guid: 3a78928e20ca90144a80b9ca1d24848f, type: 3}
-      propertyPath: m_BrainParameters.VectorObservationSize
-      value: 12
-      objectReference: {fileID: 0}
-    - target: {fileID: 765035893983080517, guid: 3a78928e20ca90144a80b9ca1d24848f, type: 3}
-      propertyPath: 'm_BrainParameters.VectorActionSize.Array.data[0]'
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 765035893983080517, guid: 3a78928e20ca90144a80b9ca1d24848f, type: 3}
-      propertyPath: m_BrainParameters.m_ActionSpec.m_NumContinuousActions
-      value: 2
-      objectReference: {fileID: 0}
     - target: {fileID: 2524702483269903275, guid: 3a78928e20ca90144a80b9ca1d24848f, type: 3}
       propertyPath: target
       value: 
       objectReference: {fileID: 6810238007332867389}
-    - target: {fileID: 2524702483269903275, guid: 3a78928e20ca90144a80b9ca1d24848f, type: 3}
-      propertyPath: MaxStep
-      value: 1000
-      objectReference: {fileID: 0}
     - target: {fileID: 7139011765611282767, guid: 3a78928e20ca90144a80b9ca1d24848f, type: 3}
       propertyPath: m_LocalPosition.x
       value: 73
@@ -888,11 +872,70 @@ PrefabInstance:
       propertyPath: m_Name
       value: CarLearner
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 765035893983080517, guid: 3a78928e20ca90144a80b9ca1d24848f, type: 3}
+    - {fileID: 1421721967347888191, guid: 3a78928e20ca90144a80b9ca1d24848f, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7931838139995894264, guid: 3a78928e20ca90144a80b9ca1d24848f, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: 1021921789184049092}
+    - targetCorrespondingSourceObject: {fileID: 7931838139995894264, guid: 3a78928e20ca90144a80b9ca1d24848f, type: 3}
+      insertIndex: 3
+      addedObject: {fileID: 3729287283800089235}
   m_SourcePrefab: {fileID: 100100000, guid: 3a78928e20ca90144a80b9ca1d24848f, type: 3}
+--- !u!1 &1365410587829530829 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7931838139995894264, guid: 3a78928e20ca90144a80b9ca1d24848f, type: 3}
+  m_PrefabInstance: {fileID: 8998585068523569461}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1021921789184049092
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1365410587829530829}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a5c9d521e5ef4759a8246a07d52221e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DecisionPeriod: 5
+  DecisionStep: 0
+  TakeActionsBetweenDecisions: 1
+--- !u!114 &3729287283800089235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1365410587829530829}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d1c4e0b1822b495aa52bc52839ecb30, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_BrainParameters:
+    VectorObservationSize: 12
+    NumStackedVectorObservations: 1
+    m_ActionSpec:
+      m_NumContinuousActions: 2
+      BranchSizes: 
+    VectorActionSize: 02000000
+    VectorActionDescriptions: []
+    VectorActionSpaceType: 1
+    hasUpgradedBrainParametersWithActionSpec: 1
+  m_Model: {fileID: 5022602860645237092, guid: a435acb52a5e543438b1233fee5e9f0a, type: 3}
+  m_InferenceDevice: 0
+  m_BehaviorType: 0
+  m_BehaviorName: SimpleCar
+  TeamId: 0
+  m_UseChildSensors: 1
+  m_UseChildActuators: 1
+  m_DeterministicInference: 0
+  m_ObservableAttributeHandling: 0
 --- !u!4 &2302386217853059194 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7139011765611282767, guid: 3a78928e20ca90144a80b9ca1d24848f, type: 3}

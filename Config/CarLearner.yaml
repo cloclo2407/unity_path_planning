@@ -21,7 +21,7 @@ behaviors:
         strength: 1.0
     keep_checkpoints: 5
     checkpoint_interval: 500000
-    max_steps: 5000000
+    max_steps: 15000000
     time_horizon: 1000
     summary_freq: 40960
     #init_path: None   # Policy to use for initialization. Can be used to resume learning in a new run using an existing model.
