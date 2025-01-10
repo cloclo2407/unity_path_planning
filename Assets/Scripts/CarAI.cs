@@ -21,7 +21,7 @@ public class CarAI : MonoBehaviour
         // get the car controller
         m_Car = GetComponent<CarController>();
         mapManager = FindFirstObjectByType<GameManagerA1>().mapManager;
-        obstacleMap = FindFirstObjectByType<ObstacleMapVisualizer>().ObstacleMap;
+        obstacleMap = ObstacleMap.Initialize(mapManager, new List<GameObject>(), Vector3.one * 3);
 
 
         // Plan your path here
