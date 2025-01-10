@@ -2277,6 +2277,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1365410587829530829, guid: 42171dcf1c957ed4bae61c42614254ed, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1433722753433720876, guid: 42171dcf1c957ed4bae61c42614254ed, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5870055561784397072, guid: 42171dcf1c957ed4bae61c42614254ed, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6810238007332867389, guid: 42171dcf1c957ed4bae61c42614254ed, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8907645743295841233, guid: 42171dcf1c957ed4bae61c42614254ed, type: 3}
       propertyPath: m_LocalPosition.x
       value: -734
@@ -3521,70 +3537,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: TrainingArea
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 8537858864739234160, guid: 42171dcf1c957ed4bae61c42614254ed, type: 3}
-    - {fileID: 8024180788286763274, guid: 42171dcf1c957ed4bae61c42614254ed, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 1365410587829530829, guid: 42171dcf1c957ed4bae61c42614254ed, type: 3}
-      insertIndex: 2
-      addedObject: {fileID: 1732316753269199012}
-    - targetCorrespondingSourceObject: {fileID: 1365410587829530829, guid: 42171dcf1c957ed4bae61c42614254ed, type: 3}
-      insertIndex: 3
-      addedObject: {fileID: 1732316753269199011}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 42171dcf1c957ed4bae61c42614254ed, type: 3}
---- !u!1 &1732316753269199010 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1365410587829530829, guid: 42171dcf1c957ed4bae61c42614254ed, type: 3}
-  m_PrefabInstance: {fileID: 1732316753269199009}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1732316753269199011
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1732316753269199010}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d1c4e0b1822b495aa52bc52839ecb30, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_BrainParameters:
-    VectorObservationSize: 12
-    NumStackedVectorObservations: 1
-    m_ActionSpec:
-      m_NumContinuousActions: 2
-      BranchSizes: 
-    VectorActionSize: 02000000
-    VectorActionDescriptions: []
-    VectorActionSpaceType: 1
-    hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 0}
-  m_InferenceDevice: 0
-  m_BehaviorType: 0
-  m_BehaviorName: SimpleCar
-  TeamId: 0
-  m_UseChildSensors: 1
-  m_UseChildActuators: 1
-  m_DeterministicInference: 0
-  m_ObservableAttributeHandling: 0
---- !u!114 &1732316753269199012
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1732316753269199010}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a5c9d521e5ef4759a8246a07d52221e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  DecisionPeriod: 5
-  DecisionStep: 0
-  TakeActionsBetweenDecisions: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
