@@ -18,7 +18,6 @@ public class CarAI : MonoBehaviour
     private ObstacleMap obstacleMap;
     private BoxCollider carCollider;
 
-    public GameObject testSphere;
 
     private void Start()
     {
@@ -126,6 +125,6 @@ public class CarAI : MonoBehaviour
         // ...
 
         // this is how you control the car
-        // m_Car.Move(1f, 1f, 1f, 0f);
+        m_Car.Move(1f, 1f, 1f, 0f);
     }
 }
