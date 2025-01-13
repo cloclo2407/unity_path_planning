@@ -59,6 +59,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1246155762223703638, guid: 59697cdff9e8a19489c9afa3022922f6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1160738765139694941}
+    - targetCorrespondingSourceObject: {fileID: 1246155762223703638, guid: 59697cdff9e8a19489c9afa3022922f6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -5418113812076449554}
   m_SourcePrefab: {fileID: 100100000, guid: 59697cdff9e8a19489c9afa3022922f6, type: 3}
 --- !u!1 &478650316897918215 stripped
 GameObject:
@@ -77,3 +80,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57f37a74d9bc64bfab28e1fee11436aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-5418113812076449554
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 478650316897918215}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a6087a348ea43b4095212edb146dc2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  trajectory_filename: Text/Traj10_26_08AM.json
+  recordedInfo:
+    position_array: []
+    rotation_array: []
+    time_array: []
+    file_name: 
+    json_string: 
+  RecordingOn: 0
+  PlaybackOn: 0
+  position_list: []
+  rotation_list: []
+  time_list: []
+  current_index: 0
