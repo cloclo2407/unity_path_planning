@@ -40,11 +40,13 @@ namespace ML
 
             carController.Move(steering, v, v, 0);
 
-            // An example dense reward based on distance. 0 when further than 50 units away from target.
-            var distanceReward =
-                1 - Mathf.Clamp01((transform.localPosition - target.transform.localPosition).magnitude / 50);
-            AddReward(distanceReward / MaxStep);
-            // Debug.Log(GetCumulativeReward());
+            if (MaxStep != 0) //With infinite episodes, need to handle reward a different way
+            {
+                // An example dense reward based on distance. 0 when further than 50 units away from target.
+                var distanceReward = 1 - Mathf.Clamp01((transform.localPosition - target.transform.localPosition).magnitude / 50);
+                AddReward(distanceReward / MaxStep);
+                // Debug.Log(GetCumulativeReward());
+            }
         }
 
         public override void CollectObservations(VectorSensor sensor)
