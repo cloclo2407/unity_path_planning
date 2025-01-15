@@ -88,7 +88,7 @@ public class CarAI : MonoBehaviour
     {
         var globalPosition = transform.position;
 
-        var localPointTraveribility = obstacleMap?.GetLocalPointTraveribility(transform.localPosition);
+        var localPointTraveribility = obstacleMap?.GetLocalPointTraversibility(transform.localPosition);
         var globalPointTravesibility = obstacleMap?.GetGlobalPointTravesibility(transform.position);
 
         // How to calculate if something intersects the location of a box
@@ -124,6 +124,7 @@ public class CarAI : MonoBehaviour
         // Execute your path here
         // ...
 
+        
         // this is how you control the car
         m_Car.Move(1f, 1f, 1f, 0f);
     }
