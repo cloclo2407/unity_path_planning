@@ -55,5 +55,31 @@ public class Pathfinding
         return heuristic;
     }
 
+    private List<Vector2Int> getNeighbors(Vector2Int position, Dictionary<Vector2Int, Traversability>& traversabilityGrid)
+    {
+        List<Vector2Int> neighbors = new List<Vector2Int>;
+        List<Vector2Int> possible_neigbord = new List<Vector2Int>
+        {
+            new Vector2Int(position.x, position.y+1), //up
+            new Vector2Int(position.x+1, position.y+1), //up-right
+            new Vector2Int(position.x+1, position.y), //right
+            new Vector2Int(position.x+1, position.y-1), //right-down
+            new Vector2Int(position.x, position.y-1), //down
+            new Vector2Int(position.x-1, position.y-1), //down-left
+            new Vector2Int(position.x-1, position.y), //left
+            new Vector2Int(position.x-1, position.y+1) //left-up
+        }
+
+        for (Vector2Int vec in possible_neigbord)
+        {
+            if (traversibilityGrid[vec] == 0)
+            {
+                neighbors.Add(vec);
+            }
+        }
+    return neighbors;
+
+    }
+
 }
 
