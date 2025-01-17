@@ -46,12 +46,17 @@ public class Pathfinding
 
             openList.Remove(currentNode);
             closed_set.Enqueue(currentNode);
+
+            foreach (var neighbor in getNeighbord(currentNode, traversabilityGrid))
+            {
+                float possible_g = currentNode.gCost + getDistance(currentNode, neighbor);
+            }
         }
     }
 
     private float getHeuristic(Vector2Int position, Vector2Int goal) // Flying distance
     {
-        float heuristic = Mathf.abs(position.x - goal.x) + Mathf.Abs(position.y - goal.y);
+        float heuristic = Math.Abs(position.x - goal.x) + Mathf.Abs(position.y - goal.y);
         return heuristic;
     }
 
@@ -72,7 +77,7 @@ public class Pathfinding
 
         for (Vector2Int vec in possible_neigbord)
         {
-            if (traversibilityGrid[vec] == 0)
+            if (traversabilityGrid.ContainsKey(vec) && traversibilityGrid[vec] == 0)
             {
                 neighbors.Add(vec);
             }
@@ -80,6 +85,10 @@ public class Pathfinding
     return neighbors;
 
     }
+
+    float getDistance(Node node1,  Node node2) {
+        float distance = Math.Sqrt(Math.Pow(node1.x-node2.x,2)+Math.pow(node1.y-node2.y,2));
+        return distance;
 
 }
 
