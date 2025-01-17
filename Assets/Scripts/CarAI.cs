@@ -27,6 +27,17 @@ public class CarAI : MonoBehaviour
         mapManager = FindFirstObjectByType<GameManagerA1>().mapManager;
         obstacleMap = ObstacleMap.Initialize(mapManager, new List<GameObject>(), Vector3.one * 4);
 
+        // Get traversibility grid (Dictionary<Vector2Int, Traversability>)
+        var traversabilityGrid = obstacleMap.traversabilityPerCell;
+
+        //Get starting position and transform it into a grid cell
+        Vector3 start_pos = mapManager.GetGlobalStartPosition();
+        Vector3Int startCell = obstacleMap.WorldToCell(start_pos);
+
+        // Get goal position and transform it into a grid cell
+        Vector3 goal_pos = mapManager.GetGlobalGoalPosition();
+        Vector3Int goalCell = obstacleMap.WorldToCell(goal_pos);
+
 
         // Plan your path here
         Vector3 someLocalPosition = mapManager.transform.InverseTransformPoint(transform.position); // Position of car w.r.p map coordinate origin (not world global)
