@@ -39,6 +39,8 @@ public class CarAI : MonoBehaviour
         Vector3Int goalCell = obstacleMap.WorldToCell(goal_pos);
 
 
+
+
         // Plan your path here
         Vector3 someLocalPosition = mapManager.transform.InverseTransformPoint(transform.position); // Position of car w.r.p map coordinate origin (not world global)
 
@@ -139,4 +141,6 @@ public class CarAI : MonoBehaviour
         // this is how you control the car
         m_Car.Move(1f, 1f, 1f, 0f);
     }
+
+    
 }
