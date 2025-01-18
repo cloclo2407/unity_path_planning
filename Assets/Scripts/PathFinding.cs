@@ -11,16 +11,7 @@ public class PathFinding
     {
         public Vector2Int position;
         private float gCost;  // Cost from start
-        public float GCost
-        {
-            get { return gCost; }
-            set
-            {
-                gCost = value;
-                FCost = gCost + hCost;
-            }
-        }
-
+        public float GCost { set; get; }
         private float hCost;  // Heuristic cost to goal
         public float HCost { get; } // Doesn't need to be changed after initialization
         public float FCost => gCost + hCost;  // Total cost
