@@ -41,7 +41,7 @@ public class CarAI : MonoBehaviour
         Vector3Int goalCell = obstacleMap.WorldToCell(goal_pos);
 
         pathFinding = new PathFinding();
-        List<Vector3> path = pathFindind.a_star(start_pos, goal_pos, traversabilityGrid, obstacleMap);
+        List<Vector3> path = pathFinding.a_star(start_pos, goal_pos, obstacleMap);
 
 
         // Plan your path here
