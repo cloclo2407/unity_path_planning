@@ -82,7 +82,7 @@ public class Pathfinding
 
     private float getHeuristic(Vector2Int position, Vector2Int goal) // Flying distance
     {
-        float heuristic = Math.Abs(position.x - goal.x) + Mathf.Abs(position.y - goal.y);
+        float heuristic = Mathf.Abs(position.x - goal.x) + Mathf.Abs(position.y - goal.y);
         return heuristic;
     }
 
@@ -114,7 +114,7 @@ public class Pathfinding
 
     private float getDistance(Node node1, Node node2) 
     {
-        float distance = Math.Sqrt(Math.Pow(node1.x - node2.x, 2) + Math.pow(node1.y - node2.y, 2));
+        float distance = Mathf.Sqrt(Mathf.Pow(node1.x - node2.x, 2) + Mathf.Pow(node1.y - node2.y, 2));
         return distance;
     }
 
