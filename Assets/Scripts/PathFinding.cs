@@ -59,13 +59,13 @@ public class Pathfinding
             openList.Remove(currentNode);
             closedList.Add(currentNode);
 
-            foreach (var neighborVec in getNeighbors(currentNode, traversabilityGrid))
+            foreach (var neighborVec in getNeighbors(currentNode.position, traversabilityGrid))
             {
                 float possible_g = currentNode.GCost + getDistance(currentNode, neighbor);
-                Node neighborNode = new Node(neighborVec, possible_g, getHeuristic(neighborVec, goalNode.position); // maybe not the fastest since you calculate everthing even if you don't use it after
-                Node inTheListNode = openList.Find(neighborNode => neighborNode.position == neighborVec);
+                Node inTheListNode = openList.Find(node => node.position == neighborVec);
                 if (inTheListNode == null)
                 {
+                    Node neighborNode = new Node(neighborVec, possible_g, getHeuristic(neighborVec, goalNode.position));
                     openList.Add(neighborNode);
                     neighborNode.parent = currentNode;
                 }
@@ -88,7 +88,7 @@ public class Pathfinding
 
     private List<Vector2Int> getNeighbors(Vector2Int position, Dictionary<Vector2Int, Traversability> traversabilityGrid)
     {
-        List<Vector2Int> neighbors = new List<Vector2Int>;
+        List<Vector2Int> neighbors = new List<Vector2Int>();
         List<Vector2Int> possible_neigbord = new List<Vector2Int>
         {
             new Vector2Int(position.x, position.y+1), //up
@@ -118,7 +118,7 @@ public class Pathfinding
         return distance;
     }
 
-    private List<Vector3> path getPath(Node goalNode, ObstacleMap obstacleMap)
+    private List<Vector3> getPath(Node goalNode, ObstacleMap obstacleMap)
     {
         List<Vector3> path = new List<Vector3>();
         Node currentNode = goalNode; //Start from the goal
