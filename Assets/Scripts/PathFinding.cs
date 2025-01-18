@@ -53,7 +53,7 @@ public class PathFinding
 
             foreach (var neighborVec in getNeighbors(currentNode.position, obstacleMap, closedList))
             {
-                float possible_g = currentNode.GCost + getDistance(currentNode, neighborVec);
+                float possible_g = currentNode.GCost + getDistance(currentNode.position, neighborVec);
                 Node inTheListNode = openList.Find(node => node.position == neighborVec);
                 if (inTheListNode == null)
                 {
@@ -105,9 +105,9 @@ public class PathFinding
 
     }
 
-    private float getDistance(Node node1, Node node2) 
+    private float getDistance(Vector2Int vec1, Vector2Int vec2) 
     {
-        float distance = Mathf.Sqrt(Mathf.Pow(node1.position.x - node2.position.x, 2) + Mathf.Pow(node1.position.y - node2.position.y, 2));
+        float distance = Mathf.Sqrt(Mathf.Pow(vec1.x - vec2.x, 2) + Mathf.Pow(vec1.y - vec2.y, 2));
         return distance;
     }
 
