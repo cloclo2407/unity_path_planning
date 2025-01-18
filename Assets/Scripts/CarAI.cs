@@ -124,7 +124,7 @@ public class CarAI : MonoBehaviour
             //Debug.Log("Steering:" + steering + " Acceleration:" + acceleration);
             m_Car.Move(steering, acceleration, acceleration, 0f);
 
-            if ((target_position-transform.position) <2f)
+            if (Vector3.Distance(target_position,transform.position) <2f)
             {
                 currentPathIndex++;
             }
