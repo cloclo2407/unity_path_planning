@@ -59,7 +59,7 @@ public class Pathfinding
             openList.Remove(currentNode);
             closedList.Add(currentNode);
 
-            foreach (var neighborVec in getNeighbors(currentNode.position, traversabilityGrid))
+            foreach (var neighborVec in getNeighbors(currentNode.position, traversabilityGrid, closedList))
             {
                 float possible_g = currentNode.GCost + getDistance(currentNode, neighbor);
                 Node inTheListNode = openList.Find(node => node.position == neighborVec);
@@ -86,10 +86,10 @@ public class Pathfinding
         return heuristic;
     }
 
-    private List<Vector2Int> getNeighbors(Vector2Int position, Dictionary<Vector2Int, Traversability> traversabilityGrid)
+    private List<Vector2Int> getNeighbors(Vector2Int position, Dictionary<Vector2Int, Traversability> traversabilityGrid, List<Node> closedList)
     {
         List<Vector2Int> neighbors = new List<Vector2Int>();
-        List<Vector2Int> possible_neigbord = new List<Vector2Int>
+        List<Vector2Int> possible_neigbors = new List<Vector2Int>
         {
             new Vector2Int(position.x, position.y+1), //up
             new Vector2Int(position.x+1, position.y+1), //up-right
@@ -99,9 +99,9 @@ public class Pathfinding
             new Vector2Int(position.x-1, position.y-1), //down-left
             new Vector2Int(position.x-1, position.y), //left
             new Vector2Int(position.x-1, position.y+1) //left-up
-        }
+        };
 
-        for (Vector2Int vec in possible_neigbord)
+        for (Vector2Int vec in possible_neigbors)
         {
             if (traversabilityGrid.ContainsKey(vec) && traversibilityGrid[vec] == 0 && !closedList.Any(node => node.position == vec)
             {
