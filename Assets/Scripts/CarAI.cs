@@ -51,8 +51,6 @@ public class CarAI : MonoBehaviour
         // Replace the code below that makes a random path
         // ...
 
-        Vector3 start_pos = mapManager.GetGlobalStartPosition();
-        Vector3 goal_pos = mapManager.GetGlobalGoalPosition();
 
         List<Vector3> my_path = new List<Vector3>();
 
