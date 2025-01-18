@@ -29,7 +29,7 @@ public class CarAI : MonoBehaviour
 
     public Rigidbody my_rigidbody;
 
-    private int currentPathIndex = 0;
+    private int currentPathIndex = 1;
     private List<Vector3> path;
 
 
@@ -41,13 +41,11 @@ public class CarAI : MonoBehaviour
         mapManager = FindFirstObjectByType<GameManagerA1>().mapManager;
         obstacleMap = ObstacleMap.Initialize(mapManager, new List<GameObject>(), Vector3.one * 4);
 
-        //Get starting position and transform it into a grid cell
+        //Get starting position
         Vector3 start_pos = mapManager.GetGlobalStartPosition();
-        Vector3Int startCell = obstacleMap.WorldToCell(start_pos);
 
-        // Get goal position and transform it into a grid cell
+        // Get goal position
         Vector3 goal_pos = mapManager.GetGlobalGoalPosition();
-        Vector3Int goalCell = obstacleMap.WorldToCell(goal_pos);
 
         pathFinding = new PathFinding();
         this.path = pathFinding.a_star(start_pos, goal_pos, obstacleMap);
@@ -55,7 +53,7 @@ public class CarAI : MonoBehaviour
 
         // Plan your path here
         Vector3 someLocalPosition = mapManager.transform.InverseTransformPoint(transform.position); // Position of car w.r.p map coordinate origin (not world global)
-
+        Debug.Log("Path length: " + path.Count);
 
         // Plot your path to see if it makes sense
         // Note that path can only be seen in "Scene" window, not "Game" window
@@ -65,7 +63,7 @@ public class CarAI : MonoBehaviour
             //Debug.DrawLine(mapManager.grid.LocalToWorld(old_wp), mapManager.grid.LocalToWorld(wp), Color.white, 1000f);
             old_wp = wp;
         }
-
+        /*
         RaycastHit hit;
         float maxRange = 500f;
         if (Physics.Raycast(transform.position + transform.up, transform.TransformDirection(Vector3.forward), out hit, maxRange))
@@ -84,7 +82,7 @@ public class CarAI : MonoBehaviour
             Vector3 closestObstacleInFront = transformDirection * hit.distance;
             Debug.DrawRay(transformPosition, closestObstacleInFront, Color.red);
             Debug.Log("Did Hit");
-        }
+        }*/
     }
 
 

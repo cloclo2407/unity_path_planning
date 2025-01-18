@@ -50,6 +50,7 @@ public class PathFinding
 
             openList.Remove(currentNode);
             closedList.Add(currentNode);
+            Debug.Log("do stuff");
 
             foreach (var neighborVec in getNeighbors(currentNode.position, obstacleMap, closedList))
             {
