@@ -20,6 +20,18 @@ public class CarAI : MonoBehaviour
 
     private PathFinding pathFinding;
 
+    public Vector3 target_velocity;
+    public Vector3 old_target_pos;
+    public Vector3 desired_velocity;
+
+    public float k_p = 2f;
+    public float k_d = 0.5f;
+
+    public Rigidbody my_rigidbody;
+
+    private int currentPathIndex = 0;
+    private List<Vector3> path;
+
 
     private void Start()
     {
@@ -38,7 +50,7 @@ public class CarAI : MonoBehaviour
         Vector3Int goalCell = obstacleMap.WorldToCell(goal_pos);
 
         pathFinding = new PathFinding();
-        List<Vector3> path = pathFinding.a_star(start_pos, goal_pos, obstacleMap);
+        this.path = pathFinding.a_star(start_pos, goal_pos, obstacleMap);
 
 
         // Plan your path here
@@ -80,8 +92,8 @@ public class CarAI : MonoBehaviour
     {
         var globalPosition = transform.position;
 
-        var localPointTraveribility = obstacleMap?.GetLocalPointTraversibility(transform.localPosition);
-        var globalPointTravesibility = obstacleMap?.GetGlobalPointTravesibility(transform.position);
+        //var localPointTraveribility = obstacleMap?.GetLocalPointTraversibility(transform.localPosition);
+        //var globalPointTravesibility = obstacleMap?.GetGlobalPointTravesibility(transform.position);
 
 
         Debug.DrawLine(globalPosition, mapManager.GetGlobalStartPosition(), Color.cyan); // Draw in global space
@@ -89,30 +101,43 @@ public class CarAI : MonoBehaviour
 
 
         // Execute your path here
-        target_position = my_target.transform.position;
-        target_velocity = (target_position - old_target_pos) / Time.fixedDeltaTime;
-        old_target_pos = target_position;
+        
+        if (currentPathIndex < path.Count)
+        {
+            Vector3 target_position = path[currentPathIndex];
+            target_velocity = (target_position - old_target_pos) / Time.fixedDeltaTime;
+            old_target_pos = target_position;
 
-        // a PD-controller to get desired acceleration from errors in position and velocity
-        Vector3 position_error = target_position - transform.position;
-        Vector3 velocity_error = target_velocity - my_rigidbody.linearVelocity;
-        Vector3 desired_acceleration = k_p * position_error + k_d * velocity_error;
+            // a PD-controller to get desired acceleration from errors in position and velocity
+            Vector3 position_error = target_position - transform.position;
+            Vector3 velocity_error = target_velocity - my_rigidbody.linearVelocity;
+            Vector3 desired_acceleration = k_p * position_error + k_d * velocity_error;
 
-        float steering = Vector3.Dot(desired_acceleration, transform.right);
-        float acceleration = Vector3.Dot(desired_acceleration, transform.forward);
+            float steering = Vector3.Dot(desired_acceleration, transform.right);
+            float acceleration = Vector3.Dot(desired_acceleration, transform.forward);
 
-        Debug.DrawLine(target_position, target_position + target_velocity, Color.red);
-        Debug.DrawLine(transform.position, transform.position + my_rigidbody.linearVelocity, Color.blue);
-        Debug.DrawLine(transform.position, transform.position + desired_acceleration, Color.black);
+            Debug.DrawLine(target_position, target_position + target_velocity, Color.red);
+            Debug.DrawLine(transform.position, transform.position + my_rigidbody.linearVelocity, Color.blue);
+            Debug.DrawLine(transform.position, transform.position + desired_acceleration, Color.black);
+
+            // this is how you control the car
+            //Debug.Log("Steering:" + steering + " Acceleration:" + acceleration);
+            m_Car.Move(steering, acceleration, acceleration, 0f);
+
+            if ((target_position-transform.position) <2f)
+            {
+                currentPathIndex++;
+            }
+        }
+        
+
+
+
+
+
 
         // this is how you control the car
-        Debug.Log("Steering:" + steering + " Acceleration:" + acceleration);
-        m_Car.Move(steering, acceleration, acceleration, 0f);
-
-
-
-        // this is how you control the car
-        m_Car.Move(1f, 1f, 1f, 0f);
+        //m_Car.Move(1f, 1f, 1f, 0f);
     }
 
     
