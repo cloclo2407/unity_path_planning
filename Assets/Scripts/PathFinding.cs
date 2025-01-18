@@ -8,7 +8,17 @@ public class Pathfinding
     public class Node
     {
         public Vector2Int position;
-        private float gCost { get; set; };  // Cost from start
+        private float gCost { get; };  // Cost from start
+        public float GCost
+        {
+            get { return gCost; }
+            set
+            {
+                gCost = value;
+                fCost = gCost + hCost;
+            }
+        }
+
         private float hCost { get; set; };  // Heuristic cost to goal
         private float fCost { get; set; } => gCost + hCost;  // Total cost
         private Node parent { get; set; };
@@ -47,11 +57,25 @@ public class Pathfinding
             openList.Remove(currentNode);
             closed_set.Enqueue(currentNode);
 
-            foreach (var neighbor in getNeighbord(currentNode, traversabilityGrid))
+            foreach (var neighborVec in getNeighbors(currentNode, traversabilityGrid))
             {
-                float possible_g = currentNode.gCost + getDistance(currentNode, neighbor);
+                float possible_g = currentNode.GCost + getDistance(currentNode, neighbor);
+                Node neighborNode = new Node(neighborVec, possible_g, getHeuristic(neighborVec, goalNode.position); // maybe not the fastest since you calculate everthing even if you don't use it after
+                Node inTheListNode = openList.Find(neighborNode => neighborNode.position == neighborVec);
+                if (inTheListNode == null)
+                {
+                    openList.Add(neighborNode);
+                    neighborNode.parent = currentNode;
+                }
+                else if (possible_g < neighborNode.gCost)
+                {
+                    inTheListNode.GCost = possible_g;
+                    inTheListNode.parent = currentNode;
+                }
             }
         }
+        return new List<Vector3>(); // No path has been found
+        
     }
 
     private float getHeuristic(Vector2Int position, Vector2Int goal) // Flying distance
@@ -86,9 +110,26 @@ public class Pathfinding
 
     }
 
-    float getDistance(Node node1,  Node node2) {
-        float distance = Math.Sqrt(Math.Pow(node1.x-node2.x,2)+Math.pow(node1.y-node2.y,2));
+    private float getDistance(Node& node1, Node& node2) 
+    {
+        float distance = Math.Sqrt(Math.Pow(node1.x - node2.x, 2) + Math.pow(node1.y - node2.y, 2));
         return distance;
+    }
+
+    private List<Vector3> path getPath(Node goalNode, ObstacleMap obstacleMap)
+    {
+        List<Vector3> path = new List<Vector3>();
+        Node currentNode = goalNode; //Start from the goal
+        while (currentNode != null)
+        {
+            Vector3 worldPosition = new Vector3(currentNode.position.x * obstacleMap.trueScale.x, 0, currentNode.position.y * obstacleMap.trueScale.z); // Calculate real word vector
+            path.Add(worldPosition);
+            currentNode = currentNode.parent;
+        }
+
+        path.Reverse();  // Reverse path to go from start to goal
+        return path;
+    }
 
 }
 
