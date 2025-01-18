@@ -39,8 +39,8 @@ public class Pathfinding
         Vector2Int goalCell = new Vector2Int((int)(goal_pos.x / obstacleMap.trueScale.x), (int)(goal_pos.z / obstacleMap.trueScale.z));
 
         //Convert start and goal into nodes
-        Node startNode = new Node(startCell, 0, );
-        Node goalNode = new Node(goalCell, , 0);
+        Node startNode = new Node(startCell, 0, getHeuristic(startCell, goalCell);
+        Node goalNode = new Node(goalCell, float.maxValue, 0);
 
         //Create open and close sets
         List<Node> openList = new List<Node>();
