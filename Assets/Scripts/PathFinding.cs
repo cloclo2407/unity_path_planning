@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using Scripts.Map;
+
 
 public class PathFinding
 {
@@ -15,7 +17,7 @@ public class PathFinding
             set
             {
                 gCost = value;
-                fCost = gCost + hCost;
+                FCost = gCost + hCost;
             }
         }
 
@@ -32,7 +34,7 @@ public class PathFinding
         }
     }
 
-    private List<Vector2Int> a_star(Vector3 start_pos, Vector3 goal_pos, Dictionary<Vector2Int, Traversability> traversabilityGrid, ObstacleMap obstacleMap)
+    private List<Vector2Int> a_star(Vector3 start_pos, Vector3 goal_pos, ObstacleMap obstacleMap)
     {
         //Convert start and goal into 2D vector
         Vector2Int startCell = new Vector2Int((int)(start_pos.x / obstacleMap.trueScale.x), (int)(start_pos.z / obstacleMap.trueScale.z));
@@ -52,13 +54,13 @@ public class PathFinding
             Node currentNode = openList.OrderBy(n => n.FCost).First();
             if (currentNode.position == goalNode.position)
             {
-                return getPath(currentNode, traversabilityGrid);
+                return getPath(currentNode, obstacleMap);
             }
 
             openList.Remove(currentNode);
             closedList.Add(currentNode);
 
-            foreach (var neighborVec in getNeighbors(currentNode.position, traversabilityGrid, closedList))
+            foreach (var neighborVec in getNeighbors(currentNode.position, obstacleMap, closedList))
             {
                 float possible_g = currentNode.GCost + getDistance(currentNode, neighborVec);
                 Node inTheListNode = openList.Find(node => node.position == neighborVec);
@@ -85,7 +87,7 @@ public class PathFinding
         return heuristic;
     }
 
-    private List<Vector2Int> getNeighbors(Vector2Int position, Dictionary<Vector2Int, Traversability> traversabilityGrid, List<Node> closedList)
+    private List<Vector2Int> getNeighbors(Vector2Int position, ObstacleMap obstacleMap, List<Node> closedList)
     {
         List<Vector2Int> neighbors = new List<Vector2Int>();
         List<Vector2Int> possible_neighbors = new List<Vector2Int>
@@ -100,9 +102,10 @@ public class PathFinding
             new Vector2Int(position.x-1, position.y+1) //left-up
         };
 
+        var traversabilityGrid = obstacleMap.traversabilityPerCell;
         foreach (Vector2Int vec in possible_neighbors)
         {
-            if (traversabilityGrid.ContainsKey(vec) && traversibilityGrid[vec] == 0 && !closedList.Any(node => node.position == vec))
+            if (traversabilityGrid.ContainsKey(vec) && traversabilityGrid[vec] == 0 && !closedList.Any(node => node.position == vec))
             {
                 neighbors.Add(vec);
             }
