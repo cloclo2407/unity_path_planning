@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class Pathfinding
+public class PathFinding
 {
     public class Node
     {
@@ -100,7 +100,7 @@ public class Pathfinding
             new Vector2Int(position.x-1, position.y+1) //left-up
         };
 
-        for (Vector2Int vec in possible_neighbors)
+        foreach (Vector2Int vec in possible_neighbors)
         {
             if (traversabilityGrid.ContainsKey(vec) && traversibilityGrid[vec] == 0 && !closedList.Any(node => node.position == vec))
             {

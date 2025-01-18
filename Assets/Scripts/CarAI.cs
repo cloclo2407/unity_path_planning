@@ -18,6 +18,8 @@ public class CarAI : MonoBehaviour
     private ObstacleMap obstacleMap;
     private BoxCollider carCollider;
 
+    private PathFinding pathFinding;
+
 
     private void Start()
     {
@@ -38,7 +40,8 @@ public class CarAI : MonoBehaviour
         Vector3 goal_pos = mapManager.GetGlobalGoalPosition();
         Vector3Int goalCell = obstacleMap.WorldToCell(goal_pos);
 
-
+        pathFinding = new PathFinding();
+        List<Vector3> path = pathFindind.a_star(start_pos, goal_pos, traversabilityGrid, obstacleMap);
 
 
         // Plan your path here
