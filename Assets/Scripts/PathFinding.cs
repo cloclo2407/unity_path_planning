@@ -21,7 +21,8 @@ public class Pathfinding
 
         private float hCost;  // Heuristic cost to goal
         public float HCost { get; } // Doesn't need to be changed after initialization
-        private float fCost { get; set; } => gCost + hCost;  // Total cost
+        private float fCost => gCost + hCost;  // Total cost
+        public float FCost { get; };
         public Node parent { get; set; };
 
         public Node(Vector2Int position, float gCost, float hCost) // Constructor
@@ -49,14 +50,14 @@ public class Pathfinding
 
         while (openList.Count > 0)
         {
-            Node currentNode = openList.OrderBy(Node => fCost).First();
-            if (currentNode.positiond == goalNode.positions)
+            Node currentNode = openList.OrderBy(n => n.FCost).First();
+            if (currentNode.position == goalNode.positions)
             {
                 return ConstructPath(currentNode, traversabilityGrid);
             }
 
             openList.Remove(currentNode);
-            closed_set.Enqueue(currentNode);
+            closedList.Add(currentNode);
 
             foreach (var neighborVec in getNeighbors(currentNode, traversabilityGrid))
             {
@@ -102,7 +103,7 @@ public class Pathfinding
 
         for (Vector2Int vec in possible_neigbord)
         {
-            if (traversabilityGrid.ContainsKey(vec) && traversibilityGrid[vec] == 0)
+            if (traversabilityGrid.ContainsKey(vec) && traversibilityGrid[vec] == 0 && !closedList.Any(node => node.position == vec)
             {
                 neighbors.Add(vec);
             }
