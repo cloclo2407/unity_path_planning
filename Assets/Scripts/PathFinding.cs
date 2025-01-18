@@ -8,7 +8,7 @@ public class Pathfinding
     public class Node
     {
         public Vector2Int position;
-        private float gCost { get; };  // Cost from start
+        private float gCost;  // Cost from start
         public float GCost
         {
             get { return gCost; }
@@ -19,14 +19,15 @@ public class Pathfinding
             }
         }
 
-        private float hCost { get; set; };  // Heuristic cost to goal
+        private float hCost;  // Heuristic cost to goal
+        public float HCost { get; } // Doesn't need to be changed after initialization
         private float fCost { get; set; } => gCost + hCost;  // Total cost
-        private Node parent { get; set; };
+        public Node parent { get; set; };
 
-        public Node(Vector2Int position, int gCost, int hCost) // Constructor
+        public Node(Vector2Int position, float gCost, float hCost) // Constructor
         {
             this.position = position;
-            this.gCost = gCost;
+            this.GCost = gCost;
             this.hCost = hCost;
         }
     }
