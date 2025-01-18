@@ -84,14 +84,14 @@ public class PathFinding
         List<Vector3> neighbors = new List<Vector3>();
         List<Vector3> possible_neighbors = new List<Vector3>
         {
-            new Vector3(position.x, 0, position.y+1), //up
-            new Vector3(position.x+1, 0, position.y+1), //up-right
-            new Vector3(position.x+1, 0, position.y), //right
-            new Vector3(position.x+1, 0, position.y-1), //right-down
-            new Vector3(position.x, 0, position.y-1), //down
-            new Vector3(position.x-1, 0, position.y-1), //down-left
-            new Vector3(position.x-1, 0, position.y), //left
-            new Vector3(position.x-1, 0, position.y+1) //left-up
+            new Vector3(position.x, 0, position.Z+1), //up
+            new Vector3(position.x+1, 0, position.z+1), //up-right
+            new Vector3(position.x+1, 0, position.z), //right
+            new Vector3(position.x+1, 0, position.z-1), //right-down
+            new Vector3(position.x, 0, position.z-1), //down
+            new Vector3(position.x-1, 0, position.z-1), //down-left
+            new Vector3(position.x-1, 0, position.z), //left
+            new Vector3(position.x-1, 0, position.z+1) //left-up
         };
         var traversabilityGrid = obstacleMap.traversabilityPerCell;
 
