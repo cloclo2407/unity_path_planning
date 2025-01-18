@@ -9,7 +9,7 @@ public class PathFinding
 {
     public class Node
     {
-        public Vector2Int position;
+        public Vector3 position;
         private float gCost;  // Cost from start
         public float GCost { set; get; }
         private float hCost;  // Heuristic cost to goal
@@ -17,7 +17,7 @@ public class PathFinding
         public float FCost => gCost + hCost;  // Total cost
         public Node parent { get; set; }
 
-        public Node(Vector2Int position, float gCost, float hCost) // Constructor
+        public Node(Vector3 position, float gCost, float hCost) // Constructor
         {
             this.position = position;
             this.GCost = gCost;
@@ -27,10 +27,10 @@ public class PathFinding
 
     public List<Vector3> a_star(Vector3 start_pos, Vector3 goal_pos, ObstacleMap obstacleMap)
     {
-        //Convert start and goal into 2D vector
-        Vector2Int startCell = new Vector2Int((int)(start_pos.x / obstacleMap.trueScale.x), (int)(start_pos.z / obstacleMap.trueScale.z));
-        Vector2Int goalCell = new Vector2Int((int)(goal_pos.x / obstacleMap.trueScale.x), (int)(goal_pos.z / obstacleMap.trueScale.z));
-
+        //Convert start and goal into cell vectors
+        Vector3 startCell = obstacleMap.WorldToCell(start_pos);
+        Vector3 goalCell = obstacleMap.WorldToCell(goal_pos);
+        Debug.Log("start cell:" + startCell);
         //Convert start and goal into nodes
         Node startNode = new Node(startCell, 0, getHeuristic(startCell, goalCell));
         Node goalNode = new Node(goalCell, float.MaxValue, 0);
@@ -73,42 +73,47 @@ public class PathFinding
         
     }
 
-    private float getHeuristic(Vector2Int position, Vector2Int goal) // Flying distance
+    private float getHeuristic(Vector3 position, Vector3 goal) // Flying distance
     {
-        float heuristic = Mathf.Abs(position.x - goal.x) + Mathf.Abs(position.y - goal.y);
+        float heuristic = Mathf.Abs(position.x - goal.x) + Mathf.Abs(position.z - goal.z);
         return heuristic;
     }
 
-    private List<Vector2Int> getNeighbors(Vector2Int position, ObstacleMap obstacleMap, List<Node> closedList)
+    private List<Vector3> getNeighbors(Vector3 position, ObstacleMap obstacleMap, List<Node> closedList)
     {
-        List<Vector2Int> neighbors = new List<Vector2Int>();
-        List<Vector2Int> possible_neighbors = new List<Vector2Int>
+        List<Vector3> neighbors = new List<Vector3>();
+        List<Vector3> possible_neighbors = new List<Vector3>
         {
-            new Vector2Int(position.x, position.y+1), //up
-            new Vector2Int(position.x+1, position.y+1), //up-right
-            new Vector2Int(position.x+1, position.y), //right
-            new Vector2Int(position.x+1, position.y-1), //right-down
-            new Vector2Int(position.x, position.y-1), //down
-            new Vector2Int(position.x-1, position.y-1), //down-left
-            new Vector2Int(position.x-1, position.y), //left
-            new Vector2Int(position.x-1, position.y+1) //left-up
+            new Vector3(position.x, 0, position.y+1), //up
+            new Vector3(position.x+1, 0, position.y+1), //up-right
+            new Vector3(position.x+1, 0, position.y), //right
+            new Vector3(position.x+1, 0, position.y-1), //right-down
+            new Vector3(position.x, 0, position.y-1), //down
+            new Vector3(position.x-1, 0, position.y-1), //down-left
+            new Vector3(position.x-1, 0, position.y), //left
+            new Vector3(position.x-1, 0, position.y+1) //left-up
         };
-
         var traversabilityGrid = obstacleMap.traversabilityPerCell;
-        foreach (Vector2Int vec in possible_neighbors)
+
+        Vector3 test = new Vector3(position.x, 0, position.z + 1);
+        Debug.Log("neighbor up : " + test);
+        Debug.Log("free: " + obstacleMap.GetLocalPointTraversibility(test) == "Free");
+
+        foreach (Vector3 vec in possible_neighbors)
         {
-            if (traversabilityGrid.ContainsKey(vec) && traversabilityGrid[vec] == 0 && !closedList.Any(node => node.position == vec))
+            if (obstacleMap.GetLocalPointTraversibility(vec) == ObstacleMap.Traversability.Free && !closedList.Any(node => node.position == vec))
             {
                 neighbors.Add(vec);
             }
         }
+        Debug.Log("neighbors: " + neighbors.Count);
         return neighbors;
 
     }
 
-    private float getDistance(Vector2Int vec1, Vector2Int vec2) 
+    private float getDistance(Vector3 vec1, Vector3 vec2) 
     {
-        float distance = Mathf.Sqrt(Mathf.Pow(vec1.x - vec2.x, 2) + Mathf.Pow(vec1.y - vec2.y, 2));
+        float distance = Mathf.Sqrt(Mathf.Pow(vec1.x - vec2.x, 2) + Mathf.Pow(vec1.z - vec2.z, 2));
         return distance;
     }
 

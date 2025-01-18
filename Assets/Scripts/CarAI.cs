@@ -48,6 +48,7 @@ public class CarAI : MonoBehaviour
         Vector3 goal_pos = mapManager.GetGlobalGoalPosition();
 
         pathFinding = new PathFinding();
+        Debug.Log("start: " + start_pos);
         this.path = pathFinding.a_star(start_pos, goal_pos, obstacleMap);
 
 
