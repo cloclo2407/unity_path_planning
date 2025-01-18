@@ -22,7 +22,7 @@ public class Pathfinding
         private float hCost;  // Heuristic cost to goal
         public float HCost { get; } // Doesn't need to be changed after initialization
         public float FCost => gCost + hCost;  // Total cost
-        public Node parent { get; set; };
+        public Node parent { get; set; }
 
         public Node(Vector2Int position, float gCost, float hCost) // Constructor
         {
@@ -32,7 +32,7 @@ public class Pathfinding
         }
     }
 
-    private List<Vector2Int> a_star(Vector3 start_pos, Vector3 goal_pos, Dictionary<Vector2Int, Traversability> traversabilityGrid)
+    private List<Vector2Int> a_star(Vector3 start_pos, Vector3 goal_pos, Dictionary<Vector2Int, Traversability> traversabilityGrid, ObstacleMap obstacleMap)
     {
         //Convert start and goal into 2D vector
         Vector2Int startCell = new Vector2Int((int)(start_pos.x / obstacleMap.trueScale.x), (int)(start_pos.z / obstacleMap.trueScale.z));
@@ -40,7 +40,7 @@ public class Pathfinding
 
         //Convert start and goal into nodes
         Node startNode = new Node(startCell, 0, getHeuristic(startCell, goalCell));
-        Node goalNode = new Node(goalCell, float.maxValue, 0);
+        Node goalNode = new Node(goalCell, float.MaxValue, 0);
 
         //Create open and close sets
         List<Node> openList = new List<Node>();
@@ -52,7 +52,7 @@ public class Pathfinding
             Node currentNode = openList.OrderBy(n => n.FCost).First();
             if (currentNode.position == goalNode.position)
             {
-                return ConstructPath(currentNode, traversabilityGrid);
+                return getPath(currentNode, traversabilityGrid);
             }
 
             openList.Remove(currentNode);
@@ -60,7 +60,7 @@ public class Pathfinding
 
             foreach (var neighborVec in getNeighbors(currentNode.position, traversabilityGrid, closedList))
             {
-                float possible_g = currentNode.GCost + getDistance(currentNode, neighbor);
+                float possible_g = currentNode.GCost + getDistance(currentNode, neighborVec);
                 Node inTheListNode = openList.Find(node => node.position == neighborVec);
                 if (inTheListNode == null)
                 {
@@ -68,7 +68,7 @@ public class Pathfinding
                     openList.Add(neighborNode);
                     neighborNode.parent = currentNode;
                 }
-                else if (possible_g < neighborNode.gCost)
+                else if (possible_g < inTheListNode.GCost)
                 {
                     inTheListNode.GCost = possible_g;
                     inTheListNode.parent = currentNode;
@@ -88,7 +88,7 @@ public class Pathfinding
     private List<Vector2Int> getNeighbors(Vector2Int position, Dictionary<Vector2Int, Traversability> traversabilityGrid, List<Node> closedList)
     {
         List<Vector2Int> neighbors = new List<Vector2Int>();
-        List<Vector2Int> possible_neigbors = new List<Vector2Int>
+        List<Vector2Int> possible_neighbors = new List<Vector2Int>
         {
             new Vector2Int(position.x, position.y+1), //up
             new Vector2Int(position.x+1, position.y+1), //up-right
@@ -100,14 +100,14 @@ public class Pathfinding
             new Vector2Int(position.x-1, position.y+1) //left-up
         };
 
-        for (Vector2Int vec in possible_neigbors)
+        for (Vector2Int vec in possible_neighbors)
         {
             if (traversabilityGrid.ContainsKey(vec) && traversibilityGrid[vec] == 0 && !closedList.Any(node => node.position == vec))
             {
                 neighbors.Add(vec);
             }
         }
-    return neighbors;
+        return neighbors;
 
     }
 
