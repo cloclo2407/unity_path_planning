@@ -32,7 +32,7 @@ public class Pathfinding
         }
     }
 
-    private List<Vector2Int> a_star(Vector3 start_pos, Vector3 goal_pos, Dictionary<Vector2Int, Traversability>& traversabilityGrid)
+    private List<Vector2Int> a_star(Vector3 start_pos, Vector3 goal_pos, Dictionary<Vector2Int, Traversability> traversabilityGrid)
     {
         //Convert start and goal into 2D vector
         Vector2Int startCell = new Vector2Int((int)(start_pos.x / obstacleMap.trueScale.x), (int)(start_pos.z / obstacleMap.trueScale.z));
@@ -85,7 +85,7 @@ public class Pathfinding
         return heuristic;
     }
 
-    private List<Vector2Int> getNeighbors(Vector2Int position, Dictionary<Vector2Int, Traversability>& traversabilityGrid)
+    private List<Vector2Int> getNeighbors(Vector2Int position, Dictionary<Vector2Int, Traversability> traversabilityGrid)
     {
         List<Vector2Int> neighbors = new List<Vector2Int>;
         List<Vector2Int> possible_neigbord = new List<Vector2Int>
@@ -111,7 +111,7 @@ public class Pathfinding
 
     }
 
-    private float getDistance(Node& node1, Node& node2) 
+    private float getDistance(Node node1, Node node2) 
     {
         float distance = Math.Sqrt(Math.Pow(node1.x - node2.x, 2) + Math.pow(node1.y - node2.y, 2));
         return distance;
