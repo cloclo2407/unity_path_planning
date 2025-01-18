@@ -29,9 +29,6 @@ public class CarAI : MonoBehaviour
         mapManager = FindFirstObjectByType<GameManagerA1>().mapManager;
         obstacleMap = ObstacleMap.Initialize(mapManager, new List<GameObject>(), Vector3.one * 4);
 
-        // Get traversibility grid (Dictionary<Vector2Int, Traversability>)
-        var traversabilityGrid = obstacleMap.traversabilityPerCell;
-
         //Get starting position and transform it into a grid cell
         Vector3 start_pos = mapManager.GetGlobalStartPosition();
         Vector3Int startCell = obstacleMap.WorldToCell(start_pos);
@@ -48,29 +45,10 @@ public class CarAI : MonoBehaviour
         Vector3 someLocalPosition = mapManager.transform.InverseTransformPoint(transform.position); // Position of car w.r.p map coordinate origin (not world global)
 
 
-        // Replace the code below that makes a random path
-        // ...
-
-
-        List<Vector3> my_path = new List<Vector3>();
-
-        my_path.Add(start_pos);
-
-        for (int i = 0; i < 3; i++)
-        {
-            Vector3 waypoint = new Vector3(
-                UnityEngine.Random.Range(obstacleMap.localBounds.min.x, obstacleMap.localBounds.max.x), 0,
-                UnityEngine.Random.Range(obstacleMap.localBounds.min.z, obstacleMap.localBounds.max.z));
-            my_path.Add(waypoint);
-        }
-
-        my_path.Add(goal_pos);
-
-
         // Plot your path to see if it makes sense
         // Note that path can only be seen in "Scene" window, not "Game" window
         Vector3 old_wp = start_pos;
-        foreach (var wp in my_path)
+        foreach (var wp in path)
         {
             //Debug.DrawLine(mapManager.grid.LocalToWorld(old_wp), mapManager.grid.LocalToWorld(wp), Color.white, 1000f);
             old_wp = wp;
@@ -105,40 +83,34 @@ public class CarAI : MonoBehaviour
         var localPointTraveribility = obstacleMap?.GetLocalPointTraversibility(transform.localPosition);
         var globalPointTravesibility = obstacleMap?.GetGlobalPointTravesibility(transform.position);
 
-        // How to calculate if something intersects the location of a box
-        var overlapped = Physics.CheckBox(
-            center: new Vector3(3f, 0f, 3f), // Global position to check
-            halfExtents: new Vector3(1f, 0.1f, 1f) // Size of box (+- Vec in each direction)
-        );
-
-        // 'out's give shortest direction and distance to "uncollide" two objects.
-        if (overlapped)
-        {
-            // Do your thing
-        }
-        // For more details https:docs.unity3d.com/ScriptReference/Physics.CheckBox.html
-        // The Physics class has a bunch of static classes for all kinds of checks.
-        ///////////////////////////
-
-        // // This is how you access information about the terrain from a simulated laser range finder
-        // // It might be wise to use this for error recovery, but do most of the planning before the race clock starts
-        RaycastHit hit;
-        float maxRange = 50f;
-        if (Physics.Raycast(globalPosition + transform.up, transform.TransformDirection(Vector3.forward), out hit, maxRange))
-        {
-            Vector3 closestObstacleInFront = transform.TransformDirection(Vector3.forward) * hit.distance;
-            Debug.DrawRay(globalPosition, closestObstacleInFront, Color.yellow);
-            //   Debug.Log("Did Hit");
-        }
 
         Debug.DrawLine(globalPosition, mapManager.GetGlobalStartPosition(), Color.cyan); // Draw in global space
         Debug.DrawLine(globalPosition, mapManager.GetGlobalGoalPosition(), Color.blue);
 
 
         // Execute your path here
-        // ...
+        target_position = my_target.transform.position;
+        target_velocity = (target_position - old_target_pos) / Time.fixedDeltaTime;
+        old_target_pos = target_position;
 
-        
+        // a PD-controller to get desired acceleration from errors in position and velocity
+        Vector3 position_error = target_position - transform.position;
+        Vector3 velocity_error = target_velocity - my_rigidbody.linearVelocity;
+        Vector3 desired_acceleration = k_p * position_error + k_d * velocity_error;
+
+        float steering = Vector3.Dot(desired_acceleration, transform.right);
+        float acceleration = Vector3.Dot(desired_acceleration, transform.forward);
+
+        Debug.DrawLine(target_position, target_position + target_velocity, Color.red);
+        Debug.DrawLine(transform.position, transform.position + my_rigidbody.linearVelocity, Color.blue);
+        Debug.DrawLine(transform.position, transform.position + desired_acceleration, Color.black);
+
+        // this is how you control the car
+        Debug.Log("Steering:" + steering + " Acceleration:" + acceleration);
+        m_Car.Move(steering, acceleration, acceleration, 0f);
+
+
+
         // this is how you control the car
         m_Car.Move(1f, 1f, 1f, 0f);
     }
