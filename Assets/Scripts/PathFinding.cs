@@ -25,7 +25,7 @@ public class PathFinding
         }
     }
 
-    public List<Vector2Int> a_star(Vector3 start_pos, Vector3 goal_pos, ObstacleMap obstacleMap)
+    public List<Vector3> a_star(Vector3 start_pos, Vector3 goal_pos, ObstacleMap obstacleMap)
     {
         //Convert start and goal into 2D vector
         Vector2Int startCell = new Vector2Int((int)(start_pos.x / obstacleMap.trueScale.x), (int)(start_pos.z / obstacleMap.trueScale.z));
