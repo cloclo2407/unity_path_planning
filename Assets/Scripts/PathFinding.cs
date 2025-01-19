@@ -25,7 +25,7 @@ public class PathFinding
         }
     }
 
-    public List<Vector3> a_star(Vector3 start_pos, Vector3 goal_pos, ObstacleMap obstacleMap)
+    public List<Vector3> a_star(Vector3 start_pos, Vector3 goal_pos, ObstacleMap obstacleMap, Transform carTransform)
     {
         //Convert start and goal into cell vectors
         Vector3Int startCell = obstacleMap.WorldToCell(start_pos);
@@ -50,7 +50,7 @@ public class PathFinding
             openList.Remove(currentNode);
             closedList.Add(currentNode);
 
-            foreach (var neighborVec in getNeighbors(currentNode.position, obstacleMap, closedList))
+            foreach (var neighborVec in getNeighbors(currentNode, obstacleMap, closedList, carTransform))
             {
                 float possible_g = currentNode.GCost + getDistance(currentNode.position, neighborVec);
                 Node inTheListNode = openList.Find(node => node.position == neighborVec);
@@ -77,30 +77,55 @@ public class PathFinding
         return heuristic;
     }
 
-    private List<Vector3Int> getNeighbors(Vector3Int position, ObstacleMap obstacleMap, List<Node> closedList)
+    private List<Vector3Int> getNeighbors(Node currentNode, ObstacleMap obstacleMap, List<Node> closedList, Transform carTransform)
     {
         List<Vector3Int> neighbors = new List<Vector3Int>();
+        Debug.Log("node position " + currentNode.position);
+
+        Vector3Int gridForward;
+
+        if (currentNode.parent == null)
+        {
+            Debug.Log("true initial orientation: " + carTransform.forward);
+            gridForward = GetClosestGridDirection(carTransform.forward);
+        }
+        else
+        {
+            gridForward = (currentNode.position - currentNode.parent.position);
+        }
+        Debug.Log("initial orientation: " + gridForward);
+
+        Vector3Int gridLeft = RotateGridDirection(gridForward, -1);
+        Vector3Int gridRight = RotateGridDirection(gridForward, 1);
+
         List<Vector3Int> possible_neighbors = new List<Vector3Int>
         {
-            new Vector3Int(position.x, 0, position.z+1), //up
+            /*new Vector3Int(position.x, 0, position.z+1), //up
             new Vector3Int(position.x+1, 0, position.z+1), //up-right
             new Vector3Int(position.x+1, 0, position.z), //right
             new Vector3Int(position.x+1, 0, position.z-1), //right-down
             new Vector3Int(position.x, 0, position.z-1), //down
             new Vector3Int(position.x-1, 0, position.z-1), //down-left
             new Vector3Int(position.x-1, 0, position.z), //left
-            new Vector3Int(position.x-1, 0, position.z+1) //left-up
+            new Vector3Int(position.x-1, 0, position.z+1) //left-up*/
+            currentNode.position + gridForward,  // Forward
+            currentNode.position + gridLeft,     // Forward-Left
+            currentNode.position + gridRight     // Forward-Right
         };
-        var traversabilityGrid = obstacleMap.traversabilityPerCell;
 
         foreach (Vector3Int vec in possible_neighbors)
         {
-            var check = obstacleMap.traversabilityPerCell[new Vector2Int(vec.x, vec.z)];
-            if (check==ObstacleMap.Traversability.Free && !closedList.Any(node => node.position == vec))
+            Debug.Log("possible neighbor : "+ vec);
+            if (obstacleMap.traversabilityPerCell.ContainsKey(new Vector2Int(vec.x, vec.z)))
             {
-                neighbors.Add(vec);
+                var check = obstacleMap.traversabilityPerCell[new Vector2Int(vec.x, vec.z)];
+                if (check == ObstacleMap.Traversability.Free && !closedList.Any(node => node.position == vec))
+                {
+                    neighbors.Add(vec);
+                }
             }
         }
+        Debug.Log("nb neighbors" + neighbors.Count);
         return neighbors;
 
     }
@@ -125,6 +150,52 @@ public class PathFinding
 
         path.Reverse();  // Reverse path to go from start to goal
         return path;
+    }
+
+    private Vector3Int GetClosestGridDirection(Vector3 direction)
+    {
+        Vector3 directionNorm = direction.normalized;
+        List<Vector3Int> gridDirections = new List<Vector3Int>
+    {
+        new Vector3Int(0, 0, 1),  // Up
+        new Vector3Int(1, 0, 1),  // Up-Right
+        new Vector3Int(1, 0, 0),  // Right
+        new Vector3Int(1, 0, -1), // Down-Right
+        new Vector3Int(0, 0, -1), // Down
+        new Vector3Int(-1, 0, -1),// Down-Left
+        new Vector3Int(-1, 0, 0), // Left
+        new Vector3Int(-1, 0, 1)  // Up-Left
+    };
+        List<float> distances = new List<float>();
+        foreach (Vector3Int vec in gridDirections)
+        {
+            distances.Add(Mathf.Sqrt(Mathf.Pow(vec.x, directionNorm.x) + Mathf.Pow(vec.z,  directionNorm.z)));
+        }
+        float maxValue = distances.Max();
+        int indexOfMax = distances.IndexOf(maxValue);
+        return gridDirections[indexOfMax];
+    }
+
+    private Vector3Int RotateGridDirection(Vector3Int direction, int rotation)
+    {
+        List<Vector3Int> gridDirections = new List<Vector3Int>
+    {
+        new Vector3Int(0, 0, 1),  // Up (0°)
+        new Vector3Int(1, 0, 1),  // Up-Right (45°)
+        new Vector3Int(1, 0, 0),  // Right (90°)
+        new Vector3Int(1, 0, -1), // Down-Right (135°)
+        new Vector3Int(0, 0, -1), // Down (180°)
+        new Vector3Int(-1, 0, -1),// Down-Left (225°)
+        new Vector3Int(-1, 0, 0), // Left (270°)
+        new Vector3Int(-1, 0, 1)  // Up-Left (315°)
+    };
+
+        int currentIndex = gridDirections.IndexOf(direction);
+        if (currentIndex == -1) return direction; // Safety check
+
+        // Rotate left (-1) or right (+1) within bounds
+        int newIndex = (currentIndex + rotation + gridDirections.Count) % gridDirections.Count;
+        return gridDirections[newIndex];
     }
 
 }

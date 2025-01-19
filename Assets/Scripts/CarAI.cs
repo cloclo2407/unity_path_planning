@@ -24,8 +24,8 @@ public class CarAI : MonoBehaviour
     public Vector3 old_target_pos;
     public Vector3 desired_velocity;
 
-    public float k_p = 2f;
-    public float k_d = 0.5f;
+    public float k_p = 1f;
+    public float k_d = 1f;
 
     public Rigidbody my_rigidbody;
 
@@ -45,12 +45,11 @@ public class CarAI : MonoBehaviour
 
         //Get starting position
         Vector3 start_pos = mapManager.GetGlobalStartPosition();
-        //Vector3 start_pos = mapManager.startPositions[0];
         // Get goal position
         Vector3 goal_pos = mapManager.GetGlobalGoalPosition();
 
         pathFinding = new PathFinding();
-        this.path = pathFinding.a_star(start_pos, goal_pos, obstacleMap);
+        this.path = pathFinding.a_star(start_pos, goal_pos, obstacleMap, gameObject.transform);
 
 
         // Plan your path here
@@ -97,8 +96,8 @@ public class CarAI : MonoBehaviour
         //var globalPointTravesibility = obstacleMap?.GetGlobalPointTravesibility(transform.position);
 
 
-        Debug.DrawLine(globalPosition, mapManager.GetGlobalStartPosition(), Color.cyan); // Draw in global space
-        Debug.DrawLine(globalPosition, mapManager.GetGlobalGoalPosition(), Color.blue);
+        //Debug.DrawLine(globalPosition, mapManager.GetGlobalStartPosition(), Color.cyan); // Draw in global space
+        //Debug.DrawLine(globalPosition, mapManager.GetGlobalGoalPosition(), Color.blue);
 
 
         // Execute your path here
@@ -119,24 +118,20 @@ public class CarAI : MonoBehaviour
 
             Debug.DrawLine(target_position, target_position + target_velocity, Color.red);
             Debug.DrawLine(transform.position, transform.position + my_rigidbody.linearVelocity, Color.blue);
-            Debug.DrawLine(transform.position, transform.position + desired_acceleration, Color.black);
+            Debug.DrawLine(transform.position, transform.position + desired_acceleration, Color.yellow);
 
             // this is how you control the car
             //Debug.Log("Steering:" + steering + " Acceleration:" + acceleration);
             m_Car.Move(steering, acceleration, acceleration, 0f);
+            Debug.Log("accelarion: " + acceleration);
+            Debug.Log("steering: " + steering);
 
-            if (Vector3.Distance(target_position,transform.position) <2f)
+            if (Vector3.Distance(target_position,transform.position) <6f)
             {
                 currentPathIndex++;
             }
         }
         
-
-
-
-
-
-
         // this is how you control the car
         //m_Car.Move(1f, 1f, 1f, 0f);
     }
