@@ -29,6 +29,7 @@ public class CarAI : MonoBehaviour
 
     public Rigidbody my_rigidbody;
 
+
     private int currentPathIndex = 1;
     private List<Vector3> path;
 
@@ -40,6 +41,7 @@ public class CarAI : MonoBehaviour
         m_Car = GetComponent<CarController>();
         mapManager = FindFirstObjectByType<GameManagerA1>().mapManager;
         obstacleMap = ObstacleMap.Initialize(mapManager, new List<GameObject>(), Vector3.one * 4);
+        my_rigidbody = GetComponent<Rigidbody>();
 
         //Get starting position
         Vector3 start_pos = mapManager.GetGlobalStartPosition();
@@ -55,14 +57,15 @@ public class CarAI : MonoBehaviour
         //Vector3 someLocalPosition = mapManager.transform.InverseTransformPoint(transform.position); // Position of car w.r.p map coordinate origin (not world global)
         Debug.Log("Path length: " + path.Count);
 
+
+
         // Plot your path to see if it makes sense
         // Note that path can only be seen in "Scene" window, not "Game" window
-        Vector3 old_wp = start_pos;
-        foreach (var wp in path)
+        for (int i = 0; i < path.Count - 1; i++)
         {
-            //Debug.DrawLine(mapManager.grid.LocalToWorld(old_wp), mapManager.grid.LocalToWorld(wp), Color.white, 1000f);
-            old_wp = wp;
+            Debug.DrawLine(path[i], path[i + 1], Color.black, 1000f); // Green line for path
         }
+
         /*
         RaycastHit hit;
         float maxRange = 500f;

@@ -117,7 +117,8 @@ public class PathFinding
         Node currentNode = goalNode; //Start from the goal
         while (currentNode != null)
         {
-            Vector3 worldPosition = new Vector3(currentNode.position.x * obstacleMap.trueScale.x, 0, currentNode.position.y * obstacleMap.trueScale.z); // Calculate real word vector
+            
+            Vector3 worldPosition = obstacleMap.CellToWorld(currentNode.position);
             path.Add(worldPosition);
             currentNode = currentNode.parent;
         }
