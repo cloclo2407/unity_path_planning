@@ -30,7 +30,6 @@ public class PathFinding
         //Convert start and goal into cell vectors
         Vector3Int startCell = obstacleMap.WorldToCell(start_pos);
         Vector3Int goalCell = obstacleMap.WorldToCell(goal_pos);
-        Debug.Log("start cell:" + startCell);
         //Convert start and goal into nodes
         Node startNode = new Node(startCell, 0, getHeuristic(startCell, goalCell));
         Node goalNode = new Node(goalCell, float.MaxValue, 0);
@@ -50,7 +49,6 @@ public class PathFinding
 
             openList.Remove(currentNode);
             closedList.Add(currentNode);
-            Debug.Log("do stuff");
 
             foreach (var neighborVec in getNeighbors(currentNode.position, obstacleMap, closedList))
             {
@@ -103,7 +101,6 @@ public class PathFinding
                 neighbors.Add(vec);
             }
         }
-        Debug.Log("neighbors: " + neighbors.Count);
         return neighbors;
 
     }

@@ -44,17 +44,15 @@ public class CarAI : MonoBehaviour
         //Get starting position
         Vector3 start_pos = mapManager.GetGlobalStartPosition();
         //Vector3 start_pos = mapManager.startPositions[0];
-        Debug.Log("start position from mapmanager: " + mapManager.startPositions[0]);
         // Get goal position
         Vector3 goal_pos = mapManager.GetGlobalGoalPosition();
 
         pathFinding = new PathFinding();
-        Debug.Log("start: " + start_pos);
         this.path = pathFinding.a_star(start_pos, goal_pos, obstacleMap);
 
 
         // Plan your path here
-        Vector3 someLocalPosition = mapManager.transform.InverseTransformPoint(transform.position); // Position of car w.r.p map coordinate origin (not world global)
+        //Vector3 someLocalPosition = mapManager.transform.InverseTransformPoint(transform.position); // Position of car w.r.p map coordinate origin (not world global)
         Debug.Log("Path length: " + path.Count);
 
         // Plot your path to see if it makes sense
