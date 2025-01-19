@@ -80,20 +80,17 @@ public class PathFinding
     private List<Vector3Int> getNeighbors(Node currentNode, ObstacleMap obstacleMap, List<Node> closedList, Transform carTransform)
     {
         List<Vector3Int> neighbors = new List<Vector3Int>();
-        Debug.Log("node position " + currentNode.position);
 
         Vector3Int gridForward;
 
         if (currentNode.parent == null)
         {
-            Debug.Log("true initial orientation: " + carTransform.forward);
             gridForward = GetClosestGridDirection(carTransform.forward);
         }
         else
         {
             gridForward = (currentNode.position - currentNode.parent.position);
         }
-        Debug.Log("initial orientation: " + gridForward);
 
         Vector3Int gridLeft = RotateGridDirection(gridForward, -1);
         Vector3Int gridRight = RotateGridDirection(gridForward, 1);
@@ -115,17 +112,15 @@ public class PathFinding
 
         foreach (Vector3Int vec in possible_neighbors)
         {
-            Debug.Log("possible neighbor : "+ vec);
             if (obstacleMap.traversabilityPerCell.ContainsKey(new Vector2Int(vec.x, vec.z)))
             {
                 var check = obstacleMap.traversabilityPerCell[new Vector2Int(vec.x, vec.z)];
-                if (check == ObstacleMap.Traversability.Free && !closedList.Any(node => node.position == vec))
+                if (check == ObstacleMap.Traversability.Free && !closedList.Any(node => node.position == vec) && IsFarFromObstacles(vec, obstacleMap))
                 {
                     neighbors.Add(vec);
                 }
             }
         }
-        Debug.Log("nb neighbors" + neighbors.Count);
         return neighbors;
 
     }
@@ -196,6 +191,39 @@ public class PathFinding
         // Rotate left (-1) or right (+1) within bounds
         int newIndex = (currentIndex + rotation + gridDirections.Count) % gridDirections.Count;
         return gridDirections[newIndex];
+    }
+
+    private bool IsFarFromObstacles(Vector3Int cell, ObstacleMap obstacleMap)
+    {
+        float minDistance = 2f;
+
+        List<Vector3Int> surroundingCells = new List<Vector3Int>
+    {
+        new Vector3Int(cell.x + 1, 0, cell.z),// Right
+        new Vector3Int(cell.x - 1, 0, cell.z),// Left
+        new Vector3Int(cell.x, 0, cell.z + 1),// Forward
+        new Vector3Int(cell.x, 0, cell.z - 1),// Back
+        new Vector3Int(cell.x + 1, 0, cell.z + 1),// Forward-right
+        new Vector3Int(cell.x - 1, 0, cell.z + 1),// Forward-left
+        new Vector3Int(cell.x + 1, 0, cell.z - 1),// Back-right
+        new Vector3Int(cell.x - 1, 0, cell.z - 1)// Back-left
+    };
+
+        foreach (Vector3Int neighbor in surroundingCells)
+        {
+            if (obstacleMap.traversabilityPerCell.TryGetValue(new Vector2Int(neighbor.x, neighbor.z), out var traversability) &&
+                traversability != ObstacleMap.Traversability.Free) 
+            {
+                float distance = Vector2.Distance(new Vector2(cell.x, cell.z), new Vector2(neighbor.x, neighbor.z));
+
+                if (distance < minDistance)
+                {
+                    return false; 
+                }
+            }
+        }
+
+        return true;
     }
 
 }
