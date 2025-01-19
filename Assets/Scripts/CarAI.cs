@@ -43,7 +43,8 @@ public class CarAI : MonoBehaviour
 
         //Get starting position
         Vector3 start_pos = mapManager.GetGlobalStartPosition();
-
+        //Vector3 start_pos = mapManager.startPositions[0];
+        Debug.Log("start position from mapmanager: " + mapManager.startPositions[0]);
         // Get goal position
         Vector3 goal_pos = mapManager.GetGlobalGoalPosition();
 
