@@ -77,7 +77,7 @@ public class ImprovePath
         // Find the point farthest from the line segment
         for (int i = startIndex + 1; i < endIndex; i++)
         {
-            float distance = PerpendicularDistance(path[i], startPoint, endPoint);
+            float distance = perpendicularDistance(path[i], startPoint, endPoint);
             if (distance > maxDistance)
             {
                 maxDistance = distance;
@@ -91,5 +91,13 @@ public class ImprovePath
             result.Add(path[indexFurthest]); // add the point
             SimplifyRecursive(path, indexFurthest, endIndex, epsilon, path); // simplify second part of the segment
         }
+    }
+
+    private float perpendicularDistance(Vector3 point, Vector3 lineStart, Vector3 lineEnd) // get distance from point to line
+    {
+        Vector3 line = lineEnd - lineStart;
+        Vector3 projection = Vector3.Project(point - lineStart, line);
+        Vector3 closestPoint = lineStart + projection;
+        return Vector3.Distance(point, closestPoint);
     }
 }
