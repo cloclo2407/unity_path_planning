@@ -62,9 +62,16 @@ public class CarAI : MonoBehaviour
 
         // Plot your path to see if it makes sense
         // Note that path can only be seen in "Scene" window, not "Game" window
+        
+
+        float thickness = 0.1f; // Adjust thickness
+        Vector3 offset = Vector3.up * thickness; 
+
         for (int i = 0; i < path.Count - 1; i++)
         {
-            Debug.DrawLine(path[i], path[i + 1], Color.cyan, 10000f); // Green line for path
+            Debug.DrawLine(path[i], path[i + 1], Color.cyan, 10000f);
+            Debug.DrawLine(path[i] + offset, path[i + 1] + offset, Color.cyan, 10000f);
+            Debug.DrawLine(path[i] - offset, path[i + 1] - offset, Color.cyan, 10000f);
         }
 
         /*
@@ -120,6 +127,7 @@ public class CarAI : MonoBehaviour
             // this is how you control the car
             //Debug.Log("Steering:" + steering + " Acceleration:" + acceleration);
             m_Car.Move(steering, acceleration, acceleration, 0f);
+            
 
             if (Vector3.Distance(target_position,transform.position) <9f)
             {
