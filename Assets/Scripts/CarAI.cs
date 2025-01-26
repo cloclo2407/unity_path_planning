@@ -56,7 +56,6 @@ public class CarAI : MonoBehaviour
 
 
         // Plan your path here
-        //Vector3 someLocalPosition = mapManager.transform.InverseTransformPoint(transform.position); // Position of car w.r.p map coordinate origin (not world global)
         Debug.Log("Path length: " + path.Count);
 
 
@@ -65,7 +64,7 @@ public class CarAI : MonoBehaviour
         // Note that path can only be seen in "Scene" window, not "Game" window
         for (int i = 0; i < path.Count - 1; i++)
         {
-            Debug.DrawLine(path[i], path[i + 1], Color.red, 10000f); // Green line for path
+            Debug.DrawLine(path[i], path[i + 1], Color.cyan, 10000f); // Green line for path
         }
 
         /*
@@ -98,11 +97,6 @@ public class CarAI : MonoBehaviour
         //var localPointTraveribility = obstacleMap?.GetLocalPointTraversibility(transform.localPosition);
         //var globalPointTravesibility = obstacleMap?.GetGlobalPointTravesibility(transform.position);
 
-
-        //Debug.DrawLine(globalPosition, mapManager.GetGlobalStartPosition(), Color.cyan); // Draw in global space
-        //Debug.DrawLine(globalPosition, mapManager.GetGlobalGoalPosition(), Color.blue);
-
-
         // Execute your path here
         
         if (currentPathIndex < path.Count)
@@ -126,18 +120,13 @@ public class CarAI : MonoBehaviour
             // this is how you control the car
             //Debug.Log("Steering:" + steering + " Acceleration:" + acceleration);
             m_Car.Move(steering, acceleration, acceleration, 0f);
-            Debug.Log("accelarion: " + acceleration);
-            Debug.Log("steering: " + steering);
 
-            if (Vector3.Distance(target_position,transform.position) <6f)
+            if (Vector3.Distance(target_position,transform.position) <9f)
             {
                 currentPathIndex++;
             }
         }
-        
-        // this is how you control the car
-        //m_Car.Move(1f, 1f, 1f, 0f);
-    }
+            }
 
     
 }
