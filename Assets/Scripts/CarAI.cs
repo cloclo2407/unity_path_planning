@@ -19,6 +19,7 @@ public class CarAI : MonoBehaviour
     private BoxCollider carCollider;
 
     private PathFinding pathFinding;
+    private ImprovePath improvePath;
 
     public Vector3 target_velocity;
     public Vector3 old_target_pos;
@@ -62,7 +63,7 @@ public class CarAI : MonoBehaviour
         // Note that path can only be seen in "Scene" window, not "Game" window
         for (int i = 0; i < path.Count - 1; i++)
         {
-            Debug.DrawLine(path[i], path[i + 1], Color.black, 1000f); // Green line for path
+            Debug.DrawLine(path[i], path[i + 1], Color.red, 10000f); // Green line for path
         }
 
         /*
