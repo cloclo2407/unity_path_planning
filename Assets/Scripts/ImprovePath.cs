@@ -51,7 +51,7 @@ public class ImprovePath
         return 0.5f * ((2 * p1) + (-p0 + p2) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t2 + (-p0 + 3 * p1 - 3 * p2 + p3) * t3);
     }
 
-    public static List<Vector3> simplifyPath(List<Vector3> path, float epsilon)
+    public static List<Vector3> simplifyPath(List<Vector3> path, float epsilon) //use Ramer-Douglas-Peucker
     {
         if (path == null || path.Count < 3)
             return path;
@@ -61,5 +61,35 @@ public class ImprovePath
         simplifiedPath.Add(path[path.Count - 1]); // add last point
 
         return simplifiedPath;
+    }
+
+    private void simplifyRecursive(List<Vector3> path, int startIndex, int endIndex, float epsilon, List<Vector3> path)
+    {
+        if (endIndex <= startIndex + 1) // can't simplify two points
+            return; 
+
+        float maxDistance = 0;
+        int indexFurthest = 0;
+
+        Vector3 startPoint = path[startIndex];
+        Vector3 endPoint = path[endIndex];
+
+        // Find the point farthest from the line segment
+        for (int i = startIndex + 1; i < endIndex; i++)
+        {
+            float distance = PerpendicularDistance(path[i], startPoint, endPoint);
+            if (distance > maxDistance)
+            {
+                maxDistance = distance;
+                indexFurthest = i;
+            }
+        }
+
+        if (maxDistance > epsilon) // if points too far from line, keep it
+        {
+            SimplifyRecursive(path, startIndex, indexFurthest, epsilon, path); // simplify first part of the segment
+            result.Add(path[indexFurthest]); // add the point
+            SimplifyRecursive(path, indexFurthest, endIndex, epsilon, path); // simplify second part of the segment
+        }
     }
 }
