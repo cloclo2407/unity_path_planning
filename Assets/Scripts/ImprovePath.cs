@@ -50,4 +50,16 @@ public class ImprovePath
         float t3 = t2 * t;
         return 0.5f * ((2 * p1) + (-p0 + p2) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t2 + (-p0 + 3 * p1 - 3 * p2 + p3) * t3);
     }
+
+    public static List<Vector3> simplifyPath(List<Vector3> path, float epsilon)
+    {
+        if (path == null || path.Count < 3)
+            return path;
+
+        List<Vector3> simplifiedPath = new List<Vector3>();
+        simplifyRecursive(path, 0, path.Count - 1, epsilon, simplifiedPath);
+        simplifiedPath.Add(path[path.Count - 1]); // add last point
+
+        return simplifiedPath;
+    }
 }
