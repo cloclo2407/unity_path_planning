@@ -9,6 +9,7 @@ public class ImprovePath
 {
     public List<Vector3> smoothPath(List<Vector3> path) // Create longer path smoother
     {
+        path = simplifyPath(path);
         List<Vector3> smoothedPath = new List<Vector3>();
         int n=path.Count;
         for (int i = 0; i < n- 1; i++)
@@ -51,7 +52,7 @@ public class ImprovePath
         return 0.5f * ((2 * p1) + (-p0 + p2) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t2 + (-p0 + 3 * p1 - 3 * p2 + p3) * t3);
     }
 
-    public static List<Vector3> simplifyPath(List<Vector3> path, float epsilon) //use Ramer-Douglas-Peucker
+    public List<Vector3> simplifyPath(List<Vector3> path, float epsilon) //use Ramer-Douglas-Peucker
     {
         if (path == null || path.Count < 3)
             return path;
@@ -63,7 +64,7 @@ public class ImprovePath
         return simplifiedPath;
     }
 
-    private void simplifyRecursive(List<Vector3> path, int startIndex, int endIndex, float epsilon, List<Vector3> path)
+    private void simplifyRecursive(List<Vector3> path, int startIndex, int endIndex, float epsilon, List<Vector3> new_path)
     {
         if (endIndex <= startIndex + 1) // can't simplify two points
             return; 
@@ -87,9 +88,9 @@ public class ImprovePath
 
         if (maxDistance > epsilon) // if points too far from line, keep it
         {
-            SimplifyRecursive(path, startIndex, indexFurthest, epsilon, path); // simplify first part of the segment
-            result.Add(path[indexFurthest]); // add the point
-            SimplifyRecursive(path, indexFurthest, endIndex, epsilon, path); // simplify second part of the segment
+            simplifyRecursive(path, startIndex, indexFurthest, epsilon, new_path); // simplify first part of the segment
+            new_path.Add(path[indexFurthest]); // add the point
+            simplifyRecursive(path, indexFurthest, endIndex, epsilon, new_path); // simplify second part of the segment
         }
     }
 
