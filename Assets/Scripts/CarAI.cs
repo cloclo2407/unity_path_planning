@@ -51,6 +51,7 @@ public class CarAI : MonoBehaviour
 
         pathFinding = new PathFinding();
         this.path = pathFinding.a_star(start_pos, goal_pos, obstacleMap, gameObject.transform);
+        this.path = improvePath.smoothPath(path);
 
 
         // Plan your path here

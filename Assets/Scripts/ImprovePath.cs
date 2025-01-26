@@ -7,7 +7,7 @@ using Scripts.Map;
 
 public class ImprovePath
 {
-    List<Vector3> SmoothPath(List<Vector3> path) // Create longer path smoother
+    public List<Vector3> smoothPath(List<Vector3> path) // Create longer path smoother
     {
         List<Vector3> smoothedPath = new List<Vector3>();
         int n=path.Count;
@@ -36,7 +36,7 @@ public class ImprovePath
 
             for (float t = 0; t < 1f; t += 0.2f) // Decreasing step will increase number of points
             {
-                Vector3 newPoint = CatmullRom(p0, p1, p2, p3, t);
+                Vector3 newPoint = catmull_Rom(p0, p1, p2, p3, t);
                 smoothedPath.Add(newPoint);
             }
         }
@@ -44,7 +44,7 @@ public class ImprovePath
         return smoothedPath;
     }
 
-    Vector3 Catmull_Rom(Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3, float t) // interpolate new point between p0 and p1
+    private Vector3 catmull_Rom(Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3, float t) // interpolate new point between p0 and p1
     {
         float t2 = t * t;
         float t3 = t2 * t;
