@@ -52,9 +52,15 @@ public class CarAI : MonoBehaviour
         pathFinding = new PathFinding();
         improvePath = new ImprovePath();
         List<Vector3> first_path = pathFinding.a_star(start_pos, goal_pos, obstacleMap, gameObject.transform);
-        this.path = improvePath.smoothPath(first_path);
 
-
+        if (first_path.Count > 0)
+        {
+            this.path = improvePath.smoothPath(first_path);
+        }
+        else
+        {
+            this.path = new List<Vector3>();
+        }
         // Plan your path here
         Debug.Log("Path length: " + path.Count);
 
@@ -106,7 +112,7 @@ public class CarAI : MonoBehaviour
 
         // Execute your path here
         
-        if (currentPathIndex < path.Count)
+        if (path.Count !=0 && currentPathIndex < path.Count)
         {
             Vector3 target_position = path[currentPathIndex];
             target_velocity = (target_position - old_target_pos) / Time.fixedDeltaTime;
@@ -134,7 +140,7 @@ public class CarAI : MonoBehaviour
                 currentPathIndex++;
             }
         }
-            }
+    }
 
     
 }
