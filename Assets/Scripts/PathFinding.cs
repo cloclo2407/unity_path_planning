@@ -97,14 +97,6 @@ public class PathFinding
 
         List<Vector3Int> possible_neighbors = new List<Vector3Int>
         {
-            /*new Vector3Int(position.x, 0, position.z+1), //up
-            new Vector3Int(position.x+1, 0, position.z+1), //up-right
-            new Vector3Int(position.x+1, 0, position.z), //right
-            new Vector3Int(position.x+1, 0, position.z-1), //right-down
-            new Vector3Int(position.x, 0, position.z-1), //down
-            new Vector3Int(position.x-1, 0, position.z-1), //down-left
-            new Vector3Int(position.x-1, 0, position.z), //left
-            new Vector3Int(position.x-1, 0, position.z+1) //left-up*/
             currentNode.position + gridForward,  // Forward
             currentNode.position + gridLeft,     // Forward-Left
             currentNode.position + gridRight     // Forward-Right

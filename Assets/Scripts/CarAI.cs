@@ -41,7 +41,9 @@ public class CarAI : MonoBehaviour
         // get the car controller
         m_Car = GetComponent<CarController>();
         mapManager = FindFirstObjectByType<GameManagerA1>().mapManager;
-        obstacleMap = ObstacleMap.Initialize(mapManager, new List<GameObject>(), Vector3.one * 4);
+
+        Vector3 grid_size = new Vector3(1,1,1)*2; //can multiply *3 for instance
+        obstacleMap = ObstacleMap.Initialize(mapManager, new List<GameObject>(), grid_size);
         my_rigidbody = GetComponent<Rigidbody>();
 
         //Get starting position
@@ -78,6 +80,12 @@ public class CarAI : MonoBehaviour
             Debug.DrawLine(path[i], path[i + 1], Color.cyan, 10000f);
             Debug.DrawLine(path[i] + offset, path[i + 1] + offset, Color.cyan, 10000f);
             Debug.DrawLine(path[i] - offset, path[i + 1] - offset, Color.cyan, 10000f);
+        }
+        for (int i = 0; i < first_path.Count - 1; i++)
+        {
+            Debug.DrawLine(first_path[i], first_path[i + 1], Color.red, 10000f);
+            Debug.DrawLine(first_path[i] + offset, first_path[i + 1] + offset, Color.red, 10000f);
+            Debug.DrawLine(first_path[i] - offset, first_path[i + 1] - offset, Color.red, 10000f);
         }
 
         /*
