@@ -57,7 +57,9 @@ public class CarAI : MonoBehaviour
 
         if (first_path.Count > 0)
         {
-            this.path = improvePath.smoothPath(first_path);
+            //this.path = improvePath.smoothPath(first_path); // doesn't work well
+            float epsilon = 0.1f;
+            this.path = improvePath.simplifyPath(first_path, epsilon);
         }
         else
         {

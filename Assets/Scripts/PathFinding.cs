@@ -95,12 +95,17 @@ public class PathFinding
         Vector3Int gridLeft = RotateGridDirection(gridForward, -1);
         Vector3Int gridRight = RotateGridDirection(gridForward, 1);
 
-        List<Vector3Int> possible_neighbors = new List<Vector3Int>
+        List<Vector3Int> possible_neighbors = new List<Vector3Int>();
+        if (currentNode.parent == null) {
+            possible_neighbors.Add(currentNode.position + gridForward);
+        }
+        else
         {
-            currentNode.position + gridForward,  // Forward
-            currentNode.position + gridLeft,     // Forward-Left
-            currentNode.position + gridRight     // Forward-Right
-        };
+            possible_neighbors.Add(currentNode.position + gridForward);  // Forward
+            possible_neighbors.Add(currentNode.position + gridLeft);     // Forward-Left
+            possible_neighbors.Add(currentNode.position + gridRight);     // Forward-Right
+        }
+       
 
         foreach (Vector3Int vec in possible_neighbors)
         {
