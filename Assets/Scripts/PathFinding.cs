@@ -72,45 +72,22 @@ public class PathFinding
         return Vector3.Distance(position, goal);
     }
 
-    private List<Vector3Int> getNeighbors(Node currentNode, ObstacleMap obstacleMap, List<Node> closedList, Transform carTransform)
+    private List<Node> getNeighbors(Node currentNode, Vectro3 goal, ObstacleMap obstacleMap, Transform carTransform)
     {
-        List<Vector3Int> neighbors = new List<Vector3Int>();
+        List<Vector3Int> neighbors = new List<Node>();
+        float stepSize = 5f; //size of a movement
+        float[] angles = { -30, 0, 30 }; // possible directions
 
-        Vector3Int gridForward;
-
-        if (currentNode.parent == null)
+        foreach (float angle in angles)
         {
-            gridForward = GetClosestGridDirection(carTransform.forward);
-        }
-        else
-        {
-            gridForward = (currentNode.position - currentNode.parent.position);
-        }
+            float newOrientation = currentNode.orientation + angle;
+            Vector3 newPos = currentNode.position + stepSize * new Vector3(Mathf.Cos(newOrientation * Mathf.Deg2Rad), 0, Mathf.Sin(newOrientation * Mathf.Deg2Rad));
 
-        Vector3Int gridLeft = RotateGridDirection(gridForward, -1);
-        Vector3Int gridRight = RotateGridDirection(gridForward, 1);
-
-        List<Vector3Int> possible_neighbors = new List<Vector3Int>();
-        if (currentNode.parent == null) {
-            possible_neighbors.Add(currentNode.position + gridForward);
-        }
-        else
-        {
-            possible_neighbors.Add(currentNode.position + gridForward);  // Forward
-            possible_neighbors.Add(currentNode.position + gridLeft);     // Forward-Left
-            possible_neighbors.Add(currentNode.position + gridRight);     // Forward-Right
-        }
-       
-
-        foreach (Vector3Int vec in possible_neighbors)
-        {
-            if (obstacleMap.traversabilityPerCell.ContainsKey(new Vector2Int(vec.x, vec.z)))
+            if (!obstacleMap.IsFarFromObstacles(obstacleMap.WorldToCell(newPos)))
             {
-                var check = obstacleMap.traversabilityPerCell[new Vector2Int(vec.x, vec.z)];
-                if (check == ObstacleMap.Traversability.Free && !closedList.Any(node => node.position == vec) && IsFarFromObstacles(vec, obstacleMap))
-                {
-                    neighbors.Add(vec);
-                }
+                float newCost = currentNode.GCost + stepSize;
+                float heuristic = getHeuristic(newPos, goal);
+                neighbors.Add(new Node(newPos, newOrientation, newCost, heuristic, currentNode));
             }
         }
         return neighbors;
