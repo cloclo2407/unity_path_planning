@@ -42,7 +42,7 @@ public class CarAI : MonoBehaviour
         m_Car = GetComponent<CarController>();
         mapManager = FindFirstObjectByType<GameManagerA1>().mapManager;
 
-        Vector3 grid_size = new Vector3(1,1,1)*2; //can multiply *3 for instance
+        Vector3 grid_size = new Vector3(1,1,1)*3; //can multiply *3 for instance
         obstacleMap = ObstacleMap.Initialize(mapManager, new List<GameObject>(), grid_size);
         my_rigidbody = GetComponent<Rigidbody>();
 
@@ -59,7 +59,7 @@ public class CarAI : MonoBehaviour
         {
             //this.path = improvePath.smoothPath(first_path); // doesn't work well
             float epsilon = 0.1f;
-            this.path = improvePath.simplifyPath(first_path, epsilon);
+            this.path = improvePath.smoothPath(first_path);
         }
         else
         {
@@ -86,8 +86,8 @@ public class CarAI : MonoBehaviour
         for (int i = 0; i < first_path.Count - 1; i++)
         {
             Debug.DrawLine(first_path[i], first_path[i + 1], Color.red, 10000f);
-            Debug.DrawLine(first_path[i] + offset, first_path[i + 1] + offset, Color.red, 10000f);
-            Debug.DrawLine(first_path[i] - offset, first_path[i + 1] - offset, Color.red, 10000f);
+            //Debug.DrawLine(first_path[i] + offset, first_path[i + 1] + offset, Color.red, 10000f);
+            //Debug.DrawLine(first_path[i] - offset, first_path[i + 1] - offset, Color.red, 10000f);
         }
 
         /*
