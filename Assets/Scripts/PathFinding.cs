@@ -67,10 +67,9 @@ public class PathFinding
         
     }
 
-    private float getHeuristic(Vector3Int position, Vector3Int goal) // Flying distance
+    private float getHeuristic(Vector3 position, Vector3 goal) // Flying distance
     {
-        float heuristic = Mathf.Abs(position.x - goal.x) + Mathf.Abs(position.z - goal.z);
-        return heuristic;
+        return Vector3.Distance(position, goal);
     }
 
     private List<Vector3Int> getNeighbors(Node currentNode, ObstacleMap obstacleMap, List<Node> closedList, Transform carTransform)
