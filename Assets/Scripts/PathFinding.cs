@@ -35,8 +35,7 @@ public class PathFinding
         Vector3Int startCell = obstacleMap.WorldToCell(start_pos);
         Vector3Int goalCell = obstacleMap.WorldToCell(goal_pos);
         //Convert start and goal into nodes
-        Node startNode = new Node(startCell, carTransform.eulerAngles.y, 0, getHeuristic(startCell, goalCell));
-        Node goalNode = new Node(goalCell, 0, float.MaxValue, 0);
+        Node startNode = new Node(start_pos, carTransform.eulerAngles.y, 0, getHeuristic(startCell, goalCell));
 
         //Create open and close sets
         SortedSet<Node> openList = new SortedSet<Node>(Comparer<Node>.Create((a, b) => a.FCost.CompareTo(b.FCost)));
@@ -54,7 +53,7 @@ public class PathFinding
             openList.Remove(currentNode);
             closedSet.Add(currentNode.position);
 
-            foreach (Node neighbor in getNeighbors(currentNode, goalNode, obstacleMap, carTransform))
+            foreach (Node neighbor in getNeighbors(currentNode, goal_pos, obstacleMap, carTransform))
             {
                 if (closedSet.Contains(neighbor.position))
                     continue;
@@ -72,9 +71,9 @@ public class PathFinding
         return Vector3.Distance(position, goal);
     }
 
-    private List<Node> getNeighbors(Node currentNode, Vectro3 goal, ObstacleMap obstacleMap, Transform carTransform)
+    private List<Node> getNeighbors(Node currentNode, Vector3 goal, ObstacleMap obstacleMap)
     {
-        List<Vector3Int> neighbors = new List<Node>();
+        List<Node> neighbors = new List<Node>();
         float stepSize = 5f; //size of a movement
         float[] angles = { -30, 0, 30 }; // possible directions
 
@@ -94,13 +93,7 @@ public class PathFinding
 
     }
 
-    private float getDistance(Vector3 vec1, Vector3 vec2) 
-    {
-        float distance = Mathf.Sqrt(Mathf.Pow(vec1.x - vec2.x, 2) + Mathf.Pow(vec1.z - vec2.z, 2));
-        return distance;
-    }
-
-    private List<Vector3> getPath(Node goalNode, ObstacleMap obstacleMap)
+    private List<Vector3> getPath(Node goalNode)
     {
         List<Vector3> path = new List<Vector3>();
         Node currentNode = goalNode; //Start from the goal
