@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using Scripts.Map;
+using System.Collections.Generic; //for sortedSet and hashset
 
 
 public class PathFinding
 {
     public class Node
     {
-        public Vector3Int position;
+        public Vector3 position;
+        private float orientation;
         private float gCost;  // Cost from start
         public float GCost { set; get; }
         private float hCost;  // Heuristic cost to goal
@@ -17,54 +19,48 @@ public class PathFinding
         public float FCost => gCost + hCost;  // Total cost
         public Node parent { get; set; }
 
-        public Node(Vector3Int position, float gCost, float hCost) // Constructor
+        public Node(Vector3 position, float orientation, float gCost, float hCost) // Constructor
         {
             this.position = position;
+            this.orientation = orientation;
             this.GCost = gCost;
             this.hCost = hCost;
+            this.parent = null;
         }
     }
 
-    public List<Vector3> a_star(Vector3 start_pos, Vector3 goal_pos, ObstacleMap obstacleMap, Transform carTransform)
+    public List<Vector3> a_star_hybrid(Vector3 start_pos, Vector3 goal_pos, ObstacleMap obstacleMap, Transform carTransform)
     {
         //Convert start and goal into cell vectors
         Vector3Int startCell = obstacleMap.WorldToCell(start_pos);
         Vector3Int goalCell = obstacleMap.WorldToCell(goal_pos);
         //Convert start and goal into nodes
-        Node startNode = new Node(startCell, 0, getHeuristic(startCell, goalCell));
-        Node goalNode = new Node(goalCell, float.MaxValue, 0);
+        Node startNode = new Node(startCell, carTransform.eulerAngles.y, 0, getHeuristic(startCell, goalCell));
+        Node goalNode = new Node(goalCell, 0, float.MaxValue, 0);
 
         //Create open and close sets
-        List<Node> openList = new List<Node>();
+        SortedSet<Node> openList = new SortedSet<Node>(Comparer<Node>.Create((a, b) => a.FCost.CompareTo(b.FCost)));
         openList.Add(startNode);
-        List<Node> closedList = new List<Node>();
+        HashSet<Node> closedSet = new HashSet<Vector3>();
 
         while (openList.Count > 0)
         {
-            Node currentNode = openList.OrderBy(n => n.FCost).First();
-            if (currentNode.position == goalNode.position)
+            Node currentNode = openList.First();
+            if (Vector3.Distance(currentNode.position, goal_pos) < 1f)
             {
                 return getPath(currentNode, obstacleMap);
             }
 
             openList.Remove(currentNode);
-            closedList.Add(currentNode);
+            closedSet.Add(currentNode.position);
 
-            foreach (var neighborVec in getNeighbors(currentNode, obstacleMap, closedList, carTransform))
+            foreach (Node neighbor in getNeighbors(currentNode, goalNode, obstacleMap, carTransform))
             {
-                float possible_g = currentNode.GCost + getDistance(currentNode.position, neighborVec);
-                Node inTheListNode = openList.Find(node => node.position == neighborVec);
-                if (inTheListNode == null)
-                {
-                    Node neighborNode = new Node(neighborVec, possible_g, getHeuristic(neighborVec, goalNode.position));
-                    openList.Add(neighborNode);
-                    neighborNode.parent = currentNode;
-                }
-                else if (possible_g < inTheListNode.GCost)
-                {
-                    inTheListNode.GCost = possible_g;
-                    inTheListNode.parent = currentNode;
-                }
+                if (closedSet.Contains(neighbor.position))
+                    continue;
+
+                openList.Add(neighbor);
+               
             }
         }
         return new List<Vector3>(); // No path has been found
