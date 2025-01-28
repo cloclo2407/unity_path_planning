@@ -113,52 +113,6 @@ public class PathFinding
         return path;
     }
 
-    private Vector3Int GetClosestGridDirection(Vector3 direction)
-    {
-        Vector3 directionNorm = direction.normalized;
-        List<Vector3Int> gridDirections = new List<Vector3Int>
-    {
-        new Vector3Int(0, 0, 1),  // Up
-        new Vector3Int(1, 0, 1),  // Up-Right
-        new Vector3Int(1, 0, 0),  // Right
-        new Vector3Int(1, 0, -1), // Down-Right
-        new Vector3Int(0, 0, -1), // Down
-        new Vector3Int(-1, 0, -1),// Down-Left
-        new Vector3Int(-1, 0, 0), // Left
-        new Vector3Int(-1, 0, 1)  // Up-Left
-    };
-        List<float> distances = new List<float>();
-        foreach (Vector3Int vec in gridDirections)
-        {
-            distances.Add(Mathf.Sqrt(Mathf.Pow(vec.x, directionNorm.x) + Mathf.Pow(vec.z,  directionNorm.z)));
-        }
-        float maxValue = distances.Max();
-        int indexOfMax = distances.IndexOf(maxValue);
-        return gridDirections[indexOfMax];
-    }
-
-    private Vector3Int RotateGridDirection(Vector3Int direction, int rotation)
-    {
-        List<Vector3Int> gridDirections = new List<Vector3Int>
-    {
-        new Vector3Int(0, 0, 1),  // Up (0°)
-        new Vector3Int(1, 0, 1),  // Up-Right (45°)
-        new Vector3Int(1, 0, 0),  // Right (90°)
-        new Vector3Int(1, 0, -1), // Down-Right (135°)
-        new Vector3Int(0, 0, -1), // Down (180°)
-        new Vector3Int(-1, 0, -1),// Down-Left (225°)
-        new Vector3Int(-1, 0, 0), // Left (270°)
-        new Vector3Int(-1, 0, 1)  // Up-Left (315°)
-    };
-
-        int currentIndex = gridDirections.IndexOf(direction);
-        if (currentIndex == -1) return direction; // Safety check
-
-        // Rotate left (-1) or right (+1) within bounds
-        int newIndex = (currentIndex + rotation + gridDirections.Count) % gridDirections.Count;
-        return gridDirections[newIndex];
-    }
-
     private bool IsFarFromObstacles(Vector3Int cell, ObstacleMap obstacleMap)
     {
         float minDistance = 2f;
