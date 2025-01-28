@@ -40,14 +40,14 @@ public class PathFinding
         //Create open and close sets
         SortedSet<Node> openList = new SortedSet<Node>(Comparer<Node>.Create((a, b) => a.FCost.CompareTo(b.FCost)));
         openList.Add(startNode);
-        HashSet<Node> closedSet = new HashSet<Vector3>();
+        HashSet<<Vector3> closedSet = new HashSet<Vector3>();
 
         while (openList.Count > 0)
         {
             Node currentNode = openList.First();
             if (Vector3.Distance(currentNode.position, goal_pos) < 1f)
             {
-                return getPath(currentNode, obstacleMap);
+                return getPath(currentNode);
             }
 
             openList.Remove(currentNode);
@@ -82,7 +82,7 @@ public class PathFinding
             float newOrientation = currentNode.orientation + angle;
             Vector3 newPos = currentNode.position + stepSize * new Vector3(Mathf.Cos(newOrientation * Mathf.Deg2Rad), 0, Mathf.Sin(newOrientation * Mathf.Deg2Rad));
 
-            if (!obstacleMap.IsFarFromObstacles(obstacleMap.WorldToCell(newPos)))
+            if (!obstacleMap.IsFarFromObstacles(obstacleMap.WorldToCell(newPos), obstacleMap))
             {
                 float newCost = currentNode.GCost + stepSize;
                 float heuristic = getHeuristic(newPos, goal);
@@ -99,7 +99,7 @@ public class PathFinding
         Node currentNode = goalNode; //Start from the goal
         while (currentNode != null)
         {
-            path.Add(currrentNode.position);
+            path.Add(currentNode.position);
             currentNode = currentNode.parent;
         }
         path.Reverse();  // Reverse path to go from start to goal
