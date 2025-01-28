@@ -9,7 +9,7 @@ public class ImprovePath
 {
     public List<Vector3> smoothPath(List<Vector3> path) // Create longer path smoother
     {
-        //path = simplifyPath(path, 0.1f);
+        //path = simplifyPath(path, 0.02f);
         List<Vector3> smoothedPath = new List<Vector3>();
         int n=path.Count;
         for (int i = 0; i < n- 1; i++)
@@ -35,14 +35,14 @@ public class ImprovePath
                 p3 = path[i+2];
             }
 
-            for (float t = 0; t < 1f; t += 0.2f) // Decreasing step will increase number of points
+            for (float t = 0; t < 1f; t += 0.3f) // Decreasing step will increase number of points
             {
                 Vector3 newPoint = catmull_Rom(p0, p1, p2, p3, t);
                 smoothedPath.Add(newPoint);
             }
         }
         smoothedPath.Add(path[n - 1]); // Add last point
-        smoothedPath = simplifyPath(smoothedPath, 0.15f);
+        smoothedPath = simplifyPath(smoothedPath, 0.01f);
 
         return smoothedPath;
     }
