@@ -106,12 +106,9 @@ public class PathFinding
         Node currentNode = goalNode; //Start from the goal
         while (currentNode != null)
         {
-            
-            Vector3 worldPosition = obstacleMap.CellToWorld(currentNode.position);
-            path.Add(worldPosition);
+            path.Add(currrentNode.position);
             currentNode = currentNode.parent;
         }
-
         path.Reverse();  // Reverse path to go from start to goal
         return path;
     }
