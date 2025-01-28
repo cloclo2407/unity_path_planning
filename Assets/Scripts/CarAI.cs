@@ -53,7 +53,7 @@ public class CarAI : MonoBehaviour
 
         pathFinding = new PathFinding();
         improvePath = new ImprovePath();
-        List<Vector3> first_path = pathFinding.a_star(start_pos, goal_pos, obstacleMap, gameObject.transform);
+        List<Vector3> first_path = pathFinding.a_star_hybrid(start_pos, goal_pos, obstacleMap, gameObject.transform);
 
         if (first_path.Count > 0)
         {

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using Scripts.Map;
-using System.Collections.Generic; //for sortedSet and hashset
 
 
 public class PathFinding
@@ -11,7 +10,7 @@ public class PathFinding
     public class Node
     {
         public Vector3 position;
-        private float orientation;
+        public float orientation;
         private float gCost;  // Cost from start
         public float GCost { set; get; }
         private float hCost;  // Heuristic cost to goal
@@ -19,13 +18,13 @@ public class PathFinding
         public float FCost => gCost + hCost;  // Total cost
         public Node parent { get; set; }
 
-        public Node(Vector3 position, float orientation, float gCost, float hCost) // Constructor
+        public Node(Vector3 position, float orientation, float gCost, float hCost, Node parent=null) // Constructor
         {
             this.position = position;
             this.orientation = orientation;
             this.GCost = gCost;
             this.hCost = hCost;
-            this.parent = null;
+            this.parent = parent;
         }
     }
 
@@ -40,7 +39,7 @@ public class PathFinding
         //Create open and close sets
         SortedSet<Node> openList = new SortedSet<Node>(Comparer<Node>.Create((a, b) => a.FCost.CompareTo(b.FCost)));
         openList.Add(startNode);
-        HashSet<<Vector3> closedSet = new HashSet<Vector3>();
+        HashSet<Vector3> closedSet = new HashSet<Vector3>();
 
         while (openList.Count > 0)
         {
@@ -53,7 +52,7 @@ public class PathFinding
             openList.Remove(currentNode);
             closedSet.Add(currentNode.position);
 
-            foreach (Node neighbor in getNeighbors(currentNode, goal_pos, obstacleMap, carTransform))
+            foreach (Node neighbor in getNeighbors(currentNode, goal_pos, obstacleMap))
             {
                 if (closedSet.Contains(neighbor.position))
                     continue;
@@ -82,7 +81,7 @@ public class PathFinding
             float newOrientation = currentNode.orientation + angle;
             Vector3 newPos = currentNode.position + stepSize * new Vector3(Mathf.Cos(newOrientation * Mathf.Deg2Rad), 0, Mathf.Sin(newOrientation * Mathf.Deg2Rad));
 
-            if (!obstacleMap.IsFarFromObstacles(obstacleMap.WorldToCell(newPos), obstacleMap))
+            if (!IsFarFromObstacles(obstacleMap.WorldToCell(newPos), obstacleMap))
             {
                 float newCost = currentNode.GCost + stepSize;
                 float heuristic = getHeuristic(newPos, goal);
