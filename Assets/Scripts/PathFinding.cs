@@ -10,18 +10,16 @@ public class PathFinding
     public class Node
     {
         public Vector3Int position;
-        private float gCost;  // Cost from start
-        public float GCost { set; get; }
-        private float hCost;  // Heuristic cost to goal
-        public float HCost { get; } // Doesn't need to be changed after initialization
-        public float FCost => gCost + hCost;  // Total cost
+        public float GCost { set; get; } // Cost from start
+        public float HCost { get; } // Heuristic cost to goal, Doesn't need to be changed after initialization
+        public float FCost => GCost + HCost;  // Total cost
         public Node parent { get; set; }
 
         public Node(Vector3Int position, float gCost, float hCost, Node parent = null) // Constructor
         {
             this.position = position;
             this.GCost = gCost;
-            this.hCost = hCost;
+            this.HCost = hCost;
             this.parent = parent;
         }
     }
@@ -75,7 +73,7 @@ public class PathFinding
 
     private float getHeuristic(Vector3Int position, Vector3Int goal) // Flying distance
     {
-        float heuristic = Mathf.Abs(position.x - goal.x) + Mathf.Abs(position.z - goal.z);
+        float heuristic = Mathf.Sqrt(Mathf.Pow(position.x - goal.x, 2) + Mathf.Pow(position.z - goal.z, 2));
         return heuristic;
     }
 
