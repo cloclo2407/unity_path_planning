@@ -17,11 +17,12 @@ public class PathFinding
         public float FCost => gCost + hCost;  // Total cost
         public Node parent { get; set; }
 
-        public Node(Vector3Int position, float gCost, float hCost) // Constructor
+        public Node(Vector3Int position, float gCost, float hCost, Node parent = null) // Constructor
         {
             this.position = position;
             this.GCost = gCost;
             this.hCost = hCost;
+            this.parent = parent;
         }
     }
 
@@ -56,9 +57,8 @@ public class PathFinding
                 Node inTheListNode = openList.Find(node => node.position == neighborVec);
                 if (inTheListNode == null)
                 {
-                    Node neighborNode = new Node(neighborVec, possible_g, getHeuristic(neighborVec, goalNode.position));
+                    Node neighborNode = new Node(neighborVec, possible_g, getHeuristic(neighborVec, goalNode.position), currentNode);
                     openList.Add(neighborNode);
-                    neighborNode.parent = currentNode;
                 }
                 else if (possible_g < inTheListNode.GCost)
                 {
