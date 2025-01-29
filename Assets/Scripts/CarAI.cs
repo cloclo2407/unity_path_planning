@@ -145,7 +145,7 @@ public class CarAI : MonoBehaviour
             m_Car.Move(steering, acceleration, acceleration, 0f);
             
 
-            if (Vector3.Distance(target_position,transform.position) <9f)
+            if (Vector3.Distance(target_position,transform.position) <6f)
             {
                 currentPathIndex++;
             }
