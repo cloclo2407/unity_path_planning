@@ -11,11 +11,9 @@ public class PathFinding
     {
         public Vector3 position;
         public float orientation;
-        private float gCost;  // Cost from start
         public float GCost { set; get; }
-        private float hCost;  // Heuristic cost to goal
         public float HCost { get; } // Doesn't need to be changed after initialization
-        public float FCost => gCost + hCost;  // Total cost
+        public float FCost => GCost + HCost;  // Total cost
         public Node parent { get; set; }
 
         public Node(Vector3 position, float orientation, float gCost, float hCost, Node parent=null) // Constructor
@@ -23,7 +21,7 @@ public class PathFinding
             this.position = position;
             this.orientation = orientation;
             this.GCost = gCost;
-            this.hCost = hCost;
+            this.HCost = hCost;
             this.parent = parent;
         }
     }
@@ -48,7 +46,7 @@ public class PathFinding
         while (openList.Count > 0)
         {
             Node currentNode = openList.First();
-            if (Vector3.Distance(currentNode.position, goal_pos) < 10f)
+            if (Vector3.Distance(currentNode.position, goal_pos) < 2f)
             {
                 return getPath(currentNode);
             }
@@ -74,7 +72,6 @@ public class PathFinding
                 else
                 {
                     openList.Add(neighbor);
-                    Debug.Log($"Adding node: {neighbor.position}, FCost: {neighbor.FCost}, GCost: {neighbor.GCost}, HCost: {neighbor.HCost}");
 
                 }
 
@@ -92,16 +89,15 @@ public class PathFinding
     private List<Node> getNeighbors(Node currentNode, Vector3 goal, ObstacleMap obstacleMap)
     {
         List<Node> neighbors = new List<Node>();
-        float stepSize = 1f; //size of a movement
-        float[] angles = { -45, -25, 0, 25, 45 }; // possible directions
+        float stepSize = 5f; //size of a movement
+        float[] angles = { -30, 0, 30 }; // possible directions
 
         foreach (float angle in angles)
         {
-            Debug.Log("looking for neighbours");
-            float newOrientation = currentNode.orientation + angle;
+            float newOrientation = (currentNode.orientation + angle) % 360;
             Vector3 newPos = currentNode.position + stepSize * new Vector3(Mathf.Cos(newOrientation * Mathf.Deg2Rad), 0, Mathf.Sin(newOrientation * Mathf.Deg2Rad));
 
-            if (!IsFarFromObstacles(obstacleMap.WorldToCell(newPos), obstacleMap))
+            if (IsFarFromObstacles(obstacleMap.WorldToCell(newPos), obstacleMap))
             {
                 float newCost = currentNode.GCost + stepSize;
                 float heuristic = getHeuristic(newPos, goal);
