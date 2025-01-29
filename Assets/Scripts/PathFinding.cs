@@ -32,7 +32,11 @@ public class PathFinding
         Vector3Int startCell = obstacleMap.WorldToCell(start_pos);
         Vector3Int goalCell = obstacleMap.WorldToCell(goal_pos);
         //Convert start and goal into nodes
-        Node startNode = new Node(start_pos, carTransform.eulerAngles.y, 0, getHeuristic(startCell, goalCell));
+        float start_angle = carTransform.rotation.eulerAngles.y;
+        if(start_angle < 0)
+            start_angle= 360 + (start_angle % 360);
+        Node startNode = new Node(start_pos, start_angle, 0, getHeuristic(startCell, goalCell));
+        Debug.Log("orientation of start : " + start_angle);
 
         //Create open and close sets
 
