@@ -64,6 +64,8 @@ public class PathFinding
                 {
                     inTheListNode.GCost = possible_g;
                     inTheListNode.parent = currentNode;
+                    openList.Remove(inTheListNode);
+                    openList.Add(inTheListNode); // To resort the list
                 }
             }
         }
