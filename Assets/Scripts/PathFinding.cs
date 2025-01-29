@@ -109,7 +109,6 @@ public class PathFinding
                 neighbors.Add(new Node(newPos, newOrientation, newCost, heuristic, currentNode));
             }
         }
-        Debug.Log(neighbors.Count);
         return neighbors;
 
     }
@@ -173,18 +172,68 @@ public class PathFinding
         public void Enqueue(T item)
         {
             _elements.Add(item);
-            _elements.Sort((a, b) => _getPriority(a).CompareTo(_getPriority(b)));
+            BubbleUp(_elements.Count - 1); // Bubble up the new element to its correct position
         }
 
         public T Dequeue()
         {
-            if (_elements.Count == 0) throw new System.InvalidOperationException("Queue is empty");
-            T item = _elements[0];
-            _elements.RemoveAt(0);
-            return item;
+            if (_elements.Count == 0)
+                throw new System.InvalidOperationException("Queue is empty");
+
+            T root = _elements[0];
+            int lastIndex = _elements.Count - 1;
+            _elements[0] = _elements[lastIndex];
+            _elements.RemoveAt(lastIndex);
+            BubbleDown(0); // Restore the heap property
+
+            return root;
         }
 
         public int Count => _elements.Count;
+
+        private void BubbleUp(int index)
+        {
+            while (index > 0)
+            {
+                int parentIndex = (index - 1) / 2;
+                if (_getPriority(_elements[index]) < _getPriority(_elements[parentIndex]))
+                {
+                    Swap(index, parentIndex);
+                    index = parentIndex;
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+        private void BubbleDown(int index)
+        {
+            int leftChildIndex = 2 * index + 1;
+            int rightChildIndex = 2 * index + 2;
+            int smallestIndex = index;
+
+            if (leftChildIndex < _elements.Count && _getPriority(_elements[leftChildIndex]) < _getPriority(_elements[smallestIndex]))
+                smallestIndex = leftChildIndex;
+
+            if (rightChildIndex < _elements.Count && _getPriority(_elements[rightChildIndex]) < _getPriority(_elements[smallestIndex]))
+                smallestIndex = rightChildIndex;
+
+            if (smallestIndex != index)
+            {
+                Swap(index, smallestIndex);
+                BubbleDown(smallestIndex);
+            }
+        }
+
+        private void Swap(int i, int j)
+        {
+            T temp = _elements[i];
+            _elements[i] = _elements[j];
+            _elements[j] = temp;
+        }
     }
+
 }
 
