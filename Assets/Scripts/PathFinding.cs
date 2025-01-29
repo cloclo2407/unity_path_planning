@@ -37,14 +37,18 @@ public class PathFinding
         Node startNode = new Node(start_pos, carTransform.eulerAngles.y, 0, getHeuristic(startCell, goalCell));
 
         //Create open and close sets
-        SortedSet<Node> openList = new SortedSet<Node>(Comparer<Node>.Create((a, b) => a.FCost.CompareTo(b.FCost)));
+        SortedSet<Node> openList = new SortedSet<Node>(Comparer<Node>.Create((a, b) =>
+        {
+            int compare = a.FCost.CompareTo(b.FCost);
+            return compare == 0 ? a.GCost.CompareTo(b.GCost) : compare;
+        }));
         openList.Add(startNode);
         HashSet<Vector3> closedSet = new HashSet<Vector3>();
 
         while (openList.Count > 0)
         {
             Node currentNode = openList.First();
-            if (Vector3.Distance(currentNode.position, goal_pos) < 1f)
+            if (Vector3.Distance(currentNode.position, goal_pos) < 10f)
             {
                 return getPath(currentNode);
             }
@@ -57,8 +61,23 @@ public class PathFinding
                 if (closedSet.Contains(neighbor.position))
                     continue;
 
-                openList.Add(neighbor);
-               
+                if (openList.Contains(neighbor))
+                {
+                    // If this new path to the neighbor is better, update its costs
+                    Node existingNode = openList.FirstOrDefault(n => n.position == neighbor.position);
+                    if (existingNode != null && neighbor.GCost < existingNode.GCost)
+                    {
+                        existingNode.GCost = neighbor.GCost;
+                        existingNode.parent = currentNode;
+                    }
+                }
+                else
+                {
+                    openList.Add(neighbor);
+                    Debug.Log($"Adding node: {neighbor.position}, FCost: {neighbor.FCost}, GCost: {neighbor.GCost}, HCost: {neighbor.HCost}");
+
+                }
+
             }
         }
         return new List<Vector3>(); // No path has been found
@@ -73,11 +92,12 @@ public class PathFinding
     private List<Node> getNeighbors(Node currentNode, Vector3 goal, ObstacleMap obstacleMap)
     {
         List<Node> neighbors = new List<Node>();
-        float stepSize = 5f; //size of a movement
-        float[] angles = { -30, 0, 30 }; // possible directions
+        float stepSize = 1f; //size of a movement
+        float[] angles = { -45, -25, 0, 25, 45 }; // possible directions
 
         foreach (float angle in angles)
         {
+            Debug.Log("looking for neighbours");
             float newOrientation = currentNode.orientation + angle;
             Vector3 newPos = currentNode.position + stepSize * new Vector3(Mathf.Cos(newOrientation * Mathf.Deg2Rad), 0, Mathf.Sin(newOrientation * Mathf.Deg2Rad));
 
@@ -88,6 +108,7 @@ public class PathFinding
                 neighbors.Add(new Node(newPos, newOrientation, newCost, heuristic, currentNode));
             }
         }
+        Debug.Log(neighbors.Count);
         return neighbors;
 
     }

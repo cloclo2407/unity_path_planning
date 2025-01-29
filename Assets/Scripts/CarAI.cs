@@ -42,7 +42,7 @@ public class CarAI : MonoBehaviour
         m_Car = GetComponent<CarController>();
         mapManager = FindFirstObjectByType<GameManagerA1>().mapManager;
 
-        Vector3 grid_size = new Vector3(1,1,1)*3; //can multiply *3 for instance
+        Vector3 grid_size = new Vector3(1,1,1)*1; //can multiply *3 for instance
         obstacleMap = ObstacleMap.Initialize(mapManager, new List<GameObject>(), grid_size);
         my_rigidbody = GetComponent<Rigidbody>();
 
