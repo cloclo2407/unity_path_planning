@@ -35,23 +35,26 @@ public class PathFinding
         Node startNode = new Node(start_pos, carTransform.eulerAngles.y, 0, getHeuristic(startCell, goalCell));
 
         //Create open and close sets
-        SortedSet<Node> openList = new SortedSet<Node>(Comparer<Node>.Create((a, b) =>
-        {
-            int compare = a.FCost.CompareTo(b.FCost);
-            return compare == 0 ? a.GCost.CompareTo(b.GCost) : compare;
-        }));
-        openList.Add(startNode);
+
+        PriorityQueue<Node> openQueue = new PriorityQueue<Node>(n => n.FCost);
+        openQueue.Enqueue(startNode);
+
         HashSet<Vector3> closedSet = new HashSet<Vector3>();
 
-        while (openList.Count > 0)
+        Dictionary<Vector3Int, Node> openDict = new Dictionary<Vector3Int, Node>();
+        openDict[Vector3Int.RoundToInt(startNode.position)] = startNode;
+
+        while (openQueue.Count > 0)
         {
-            Node currentNode = openList.First();
-            if (Vector3.Distance(currentNode.position, goal_pos) < 2f)
+            Node currentNode = openQueue.Dequeue();  // Get the lowest FCost node
+            openDict.Remove(Vector3Int.RoundToInt(currentNode.position));  // Remove from dictionary
+
+            if (Vector3Int.RoundToInt(currentNode.position) == Vector3Int.RoundToInt(goal_pos))
             {
                 return getPath(currentNode);
             }
 
-            openList.Remove(currentNode);
+
             closedSet.Add(currentNode.position);
 
             foreach (Node neighbor in getNeighbors(currentNode, goal_pos, obstacleMap))
@@ -59,20 +62,20 @@ public class PathFinding
                 if (closedSet.Contains(neighbor.position))
                     continue;
 
-                if (openList.Contains(neighbor))
+                Vector3Int roundedPos = Vector3Int.RoundToInt(neighbor.position);
+                if (openDict.TryGetValue(roundedPos, out Node existingNode))
                 {
-                    // If this new path to the neighbor is better, update its costs
-                    Node existingNode = openList.FirstOrDefault(n => n.position == neighbor.position);
-                    if (existingNode != null && neighbor.GCost < existingNode.GCost)
+                    if (neighbor.GCost < existingNode.GCost)  // Better path found
                     {
                         existingNode.GCost = neighbor.GCost;
                         existingNode.parent = currentNode;
+                        openQueue.Enqueue(existingNode);  // Reinsert with new cost
                     }
                 }
                 else
                 {
-                    openList.Add(neighbor);
-
+                    openQueue.Enqueue(neighbor);
+                    openDict[roundedPos] = neighbor;
                 }
 
             }
@@ -95,6 +98,8 @@ public class PathFinding
         foreach (float angle in angles)
         {
             float newOrientation = (currentNode.orientation + angle) % 360;
+            if (newOrientation < 0) newOrientation += 360;
+
             Vector3 newPos = currentNode.position + stepSize * new Vector3(Mathf.Cos(newOrientation * Mathf.Deg2Rad), 0, Mathf.Sin(newOrientation * Mathf.Deg2Rad));
 
             if (IsFarFromObstacles(obstacleMap.WorldToCell(newPos), obstacleMap))
@@ -155,5 +160,31 @@ public class PathFinding
         return true;
     }
 
+    public class PriorityQueue<T>
+    {
+        private List<T> _elements = new List<T>();
+        private System.Func<T, float> _getPriority;
+
+        public PriorityQueue(System.Func<T, float> getPriority)
+        {
+            _getPriority = getPriority;
+        }
+
+        public void Enqueue(T item)
+        {
+            _elements.Add(item);
+            _elements.Sort((a, b) => _getPriority(a).CompareTo(_getPriority(b)));
+        }
+
+        public T Dequeue()
+        {
+            if (_elements.Count == 0) throw new System.InvalidOperationException("Queue is empty");
+            T item = _elements[0];
+            _elements.RemoveAt(0);
+            return item;
+        }
+
+        public int Count => _elements.Count;
+    }
 }
 
