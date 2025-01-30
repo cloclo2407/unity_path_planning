@@ -28,15 +28,11 @@ public class PathFinding
 
     public List<Vector3> a_star_hybrid(Vector3 start_pos, Vector3 goal_pos, ObstacleMap obstacleMap, Transform carTransform)
     {
-        //Convert start and goal into cell vectors
-        Vector3Int startCell = obstacleMap.WorldToCell(start_pos);
-        Vector3Int goalCell = obstacleMap.WorldToCell(goal_pos);
-        //Convert start and goal into nodes
-        float start_angle = carTransform.rotation.eulerAngles.y;
-        if(start_angle < 0)
-            start_angle= 360 + (start_angle % 360);
-        Node startNode = new Node(start_pos, start_angle, 0, getHeuristic(startCell, goalCell));
-        Debug.Log("orientation of start : " + start_angle);
+        float start_angle = Vector3.SignedAngle(Vector3.left, carTransform.forward, Vector3.up);
+        if (start_angle < 0)
+            start_angle += 360;
+
+        Node startNode = new Node(start_pos, start_angle, 0, getHeuristic(start_pos, goal_pos));
 
         //Create open and close sets
 
@@ -53,7 +49,7 @@ public class PathFinding
             Node currentNode = openQueue.Dequeue();  // Get the lowest FCost node
             openDict.Remove(Vector3Int.RoundToInt(currentNode.position));  // Remove from dictionary
 
-            if (Vector3Int.RoundToInt(currentNode.position) == Vector3Int.RoundToInt(goal_pos))
+            if (Vector3Int.RoundToInt(currentNode.position) == Vector3Int.RoundToInt(goal_pos) )
             {
                 return getPath(currentNode);
             }
@@ -97,7 +93,7 @@ public class PathFinding
     {
         List<Node> neighbors = new List<Node>();
         float stepSize = 5f; //size of a movement
-        float[] angles = { -30, 0, 30 }; // possible directions
+        float[] angles = { 0, 5, 10, 25, 35, 45}; // possible directions
 
         foreach (float angle in angles)
         {
