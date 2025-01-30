@@ -25,8 +25,8 @@ public class CarAI : MonoBehaviour
     public Vector3 old_target_pos;
     public Vector3 desired_velocity;
 
-    public float k_p = 1f;
-    public float k_d = 1f;
+    public float k_p = 1.5f;
+    public float k_d = 1.5f;
 
     public Rigidbody my_rigidbody;
 

@@ -93,7 +93,8 @@ public class PathFinding
     {
         List<Node> neighbors = new List<Node>();
         float stepSize = 5f; //size of a movement
-        float[] angles = {-45, -20,  0, 20, 45}; // possible directions
+        //REPLACE FOR BETTER BUT LONGER PROCESS
+        float[] angles = { -45,-25, -15, 0, 15, 25, 45 }; // float[] angles = {-45, -30, -20, -10,  0, 10, 20, 30,  45}; // possible directions
 
         foreach (float angle in angles)
         {

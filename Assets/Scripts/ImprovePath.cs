@@ -42,7 +42,7 @@ public class ImprovePath
             }
         }
         smoothedPath.Add(path[n - 1]); // Add last point
-        smoothedPath = simplifyPath(smoothedPath, 0.01f);
+        smoothedPath = simplifyPath(smoothedPath, 0.5f);
 
         return smoothedPath;
     }
