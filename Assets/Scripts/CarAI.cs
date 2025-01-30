@@ -42,7 +42,7 @@ public class CarAI : MonoBehaviour
         m_Car = GetComponent<CarController>();
         mapManager = FindFirstObjectByType<GameManagerA1>().mapManager;
 
-        Vector3 grid_size = new Vector3(1,1,1)*3; //can multiply *3 for instance
+        Vector3 grid_size = new Vector3(1,1,1)*2; //can multiply *3 for instance
         obstacleMap = ObstacleMap.Initialize(mapManager, new List<GameObject>(), grid_size);
         my_rigidbody = GetComponent<Rigidbody>();
 
@@ -53,7 +53,7 @@ public class CarAI : MonoBehaviour
 
         pathFinding = new PathFinding();
         improvePath = new ImprovePath();
-        List<Vector3> first_path = pathFinding.a_star(start_pos, goal_pos, obstacleMap, gameObject.transform);
+        List<Vector3> first_path = pathFinding.a_star_hybrid(start_pos, goal_pos, obstacleMap, gameObject.transform);
 
         if (first_path.Count > 0)
         {

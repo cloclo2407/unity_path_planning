@@ -9,185 +9,121 @@ public class PathFinding
 {
     public class Node
     {
-        public Vector3Int position;
-        public float GCost { set; get; } // Cost from start
-        public float HCost { get; } // Heuristic cost to goal, Doesn't need to be changed after initialization
+        public Vector3 position;
+        public float orientation;
+        public float GCost { set; get; }
+        public float HCost { get; } // Doesn't need to be changed after initialization
         public float FCost => GCost + HCost;  // Total cost
         public Node parent { get; set; }
 
-        public Node(Vector3Int position, float gCost, float hCost, Node parent = null) // Constructor
+        public Node(Vector3 position, float orientation, float gCost, float hCost, Node parent=null) // Constructor
         {
             this.position = position;
+            this.orientation = orientation;
             this.GCost = gCost;
             this.HCost = hCost;
             this.parent = parent;
         }
     }
 
-    public List<Vector3> a_star(Vector3 start_pos, Vector3 goal_pos, ObstacleMap obstacleMap, Transform carTransform)
+    public List<Vector3> a_star_hybrid(Vector3 start_pos, Vector3 goal_pos, ObstacleMap obstacleMap, Transform carTransform)
     {
-        //Convert start and goal into cell vectors
-        Vector3Int startCell = obstacleMap.WorldToCell(start_pos);
-        Vector3Int goalCell = obstacleMap.WorldToCell(goal_pos);
-        //Convert start and goal into nodes
-        Node startNode = new Node(startCell, 0, getHeuristic(startCell, goalCell));
-        Node goalNode = new Node(goalCell, float.MaxValue, 0);
+        float start_angle = Vector3.SignedAngle(Vector3.left, carTransform.forward, Vector3.up);
+        if (start_angle < 0)
+            start_angle += 360;
+
+        Node startNode = new Node(start_pos, start_angle, 0, getHeuristic(start_pos, goal_pos));
 
         //Create open and close sets
-        List<Node> openList = new List<Node>();
-        openList.Add(startNode);
-        List<Node> closedList = new List<Node>();
 
-        while (openList.Count > 0)
+        PriorityQueue<Node> openQueue = new PriorityQueue<Node>(n => n.FCost);
+        openQueue.Enqueue(startNode);
+
+        HashSet<Vector3> closedSet = new HashSet<Vector3>();
+
+        Dictionary<Vector3Int, Node> openDict = new Dictionary<Vector3Int, Node>();
+        openDict[Vector3Int.RoundToInt(startNode.position)] = startNode;
+
+        while (openQueue.Count > 0)
         {
-            Node currentNode = openList.OrderBy(n => n.FCost).First();
-            if (currentNode.position == goalNode.position)
+            Node currentNode = openQueue.Dequeue();  // Get the lowest FCost node
+            openDict.Remove(Vector3Int.RoundToInt(currentNode.position));  // Remove from dictionary
+
+            if (Vector3Int.RoundToInt(currentNode.position) == Vector3Int.RoundToInt(goal_pos) )
             {
-                return getPath(currentNode, obstacleMap);
+                return getPath(currentNode);
             }
 
-            openList.Remove(currentNode);
-            closedList.Add(currentNode);
 
-            foreach (var neighborVec in getNeighbors(currentNode, obstacleMap, closedList, carTransform))
+            closedSet.Add(currentNode.position);
+
+            foreach (Node neighbor in getNeighbors(currentNode, goal_pos, obstacleMap))
             {
-                float possible_g = currentNode.GCost + getDistance(currentNode.position, neighborVec);
-                Node inTheListNode = openList.Find(node => node.position == neighborVec);
-                if (inTheListNode == null)
+                if (closedSet.Contains(neighbor.position))
+                    continue;
+
+                Vector3Int roundedPos = Vector3Int.RoundToInt(neighbor.position);
+                if (openDict.TryGetValue(roundedPos, out Node existingNode))
                 {
-                    Node neighborNode = new Node(neighborVec, possible_g, getHeuristic(neighborVec, goalNode.position), currentNode);
-                    openList.Add(neighborNode);
+                    if (neighbor.GCost < existingNode.GCost)  // Better path found
+                    {
+                        existingNode.GCost = neighbor.GCost;
+                        existingNode.parent = currentNode;
+                        openQueue.Enqueue(existingNode);  // Reinsert with new cost
+                    }
                 }
-                else if (possible_g < inTheListNode.GCost)
+                else
                 {
-                    inTheListNode.GCost = possible_g;
-                    inTheListNode.parent = currentNode;
-                    openList.Remove(inTheListNode);
-                    openList.Add(inTheListNode); // To resort the list
+                    openQueue.Enqueue(neighbor);
+                    openDict[roundedPos] = neighbor;
                 }
+
             }
         }
         return new List<Vector3>(); // No path has been found
         
     }
 
-    private float getHeuristic(Vector3Int position, Vector3Int goal) // Flying distance
+    private float getHeuristic(Vector3 position, Vector3 goal) // Flying distance
     {
-        float heuristic = Mathf.Sqrt(Mathf.Pow(position.x - goal.x, 2) + Mathf.Pow(position.z - goal.z, 2));
-        return heuristic;
+        return Vector3.Distance(position, goal);
     }
 
-    private List<Vector3Int> getNeighbors(Node currentNode, ObstacleMap obstacleMap, List<Node> closedList, Transform carTransform)
+    private List<Node> getNeighbors(Node currentNode, Vector3 goal, ObstacleMap obstacleMap)
     {
-        List<Vector3Int> neighbors = new List<Vector3Int>();
+        List<Node> neighbors = new List<Node>();
+        float stepSize = 5f; //size of a movement
+        float[] angles = { 0, 5, 10, 25, 35, 45}; // possible directions
 
-        Vector3Int gridForward;
-
-        if (currentNode.parent == null)
+        foreach (float angle in angles)
         {
-            gridForward = GetClosestGridDirection(carTransform.forward);
-        }
-        else
-        {
-            gridForward = (currentNode.position - currentNode.parent.position);
-        }
+            float newOrientation = (currentNode.orientation + angle) % 360;
+            if (newOrientation < 0) newOrientation += 360;
 
-        Vector3Int gridLeft = RotateGridDirection(gridForward, -1);
-        Vector3Int gridRight = RotateGridDirection(gridForward, 1);
+            Vector3 newPos = currentNode.position + stepSize * new Vector3(Mathf.Cos(newOrientation * Mathf.Deg2Rad), 0, Mathf.Sin(newOrientation * Mathf.Deg2Rad));
 
-        List<Vector3Int> possible_neighbors = new List<Vector3Int>();
-        if (currentNode.parent == null) {
-            possible_neighbors.Add(currentNode.position + gridForward);
-        }
-        else
-        {
-            possible_neighbors.Add(currentNode.position + gridForward);  // Forward
-            possible_neighbors.Add(currentNode.position + gridLeft);     // Forward-Left
-            possible_neighbors.Add(currentNode.position + gridRight);     // Forward-Right
-        }
-       
-
-        foreach (Vector3Int vec in possible_neighbors)
-        {
-            if (obstacleMap.traversabilityPerCell.ContainsKey(new Vector2Int(vec.x, vec.z)))
+            if (IsFarFromObstacles(obstacleMap.WorldToCell(newPos), obstacleMap))
             {
-                var check = obstacleMap.traversabilityPerCell[new Vector2Int(vec.x, vec.z)];
-                if (check == ObstacleMap.Traversability.Free && !closedList.Any(node => node.position == vec) && IsFarFromObstacles(vec, obstacleMap))
-                {
-                    neighbors.Add(vec);
-                }
+                float newCost = currentNode.GCost + stepSize;
+                float heuristic = getHeuristic(newPos, goal);
+                neighbors.Add(new Node(newPos, newOrientation, newCost, heuristic, currentNode));
             }
         }
         return neighbors;
 
     }
 
-    private float getDistance(Vector3 vec1, Vector3 vec2) 
-    {
-        float distance = Mathf.Sqrt(Mathf.Pow(vec1.x - vec2.x, 2) + Mathf.Pow(vec1.z - vec2.z, 2));
-        return distance;
-    }
-
-    private List<Vector3> getPath(Node goalNode, ObstacleMap obstacleMap)
+    private List<Vector3> getPath(Node goalNode)
     {
         List<Vector3> path = new List<Vector3>();
         Node currentNode = goalNode; //Start from the goal
         while (currentNode != null)
         {
-            
-            Vector3 worldPosition = obstacleMap.CellToWorld(currentNode.position);
-            path.Add(worldPosition);
+            path.Add(currentNode.position);
             currentNode = currentNode.parent;
         }
-
         path.Reverse();  // Reverse path to go from start to goal
         return path;
-    }
-
-    private Vector3Int GetClosestGridDirection(Vector3 direction)
-    {
-        Vector3 directionNorm = direction.normalized;
-        List<Vector3Int> gridDirections = new List<Vector3Int>
-    {
-        new Vector3Int(0, 0, 1),  // Up
-        new Vector3Int(1, 0, 1),  // Up-Right
-        new Vector3Int(1, 0, 0),  // Right
-        new Vector3Int(1, 0, -1), // Down-Right
-        new Vector3Int(0, 0, -1), // Down
-        new Vector3Int(-1, 0, -1),// Down-Left
-        new Vector3Int(-1, 0, 0), // Left
-        new Vector3Int(-1, 0, 1)  // Up-Left
-    };
-        List<float> distances = new List<float>();
-        foreach (Vector3Int vec in gridDirections)
-        {
-            distances.Add(Mathf.Sqrt(Mathf.Pow(vec.x, directionNorm.x) + Mathf.Pow(vec.z,  directionNorm.z)));
-        }
-        float maxValue = distances.Max();
-        int indexOfMax = distances.IndexOf(maxValue);
-        return gridDirections[indexOfMax];
-    }
-
-    private Vector3Int RotateGridDirection(Vector3Int direction, int rotation)
-    {
-        List<Vector3Int> gridDirections = new List<Vector3Int>
-    {
-        new Vector3Int(0, 0, 1),  // Up (0°)
-        new Vector3Int(1, 0, 1),  // Up-Right (45°)
-        new Vector3Int(1, 0, 0),  // Right (90°)
-        new Vector3Int(1, 0, -1), // Down-Right (135°)
-        new Vector3Int(0, 0, -1), // Down (180°)
-        new Vector3Int(-1, 0, -1),// Down-Left (225°)
-        new Vector3Int(-1, 0, 0), // Left (270°)
-        new Vector3Int(-1, 0, 1)  // Up-Left (315°)
-    };
-
-        int currentIndex = gridDirections.IndexOf(direction);
-        if (currentIndex == -1) return direction; // Safety check
-
-        // Rotate left (-1) or right (+1) within bounds
-        int newIndex = (currentIndex + rotation + gridDirections.Count) % gridDirections.Count;
-        return gridDirections[newIndex];
     }
 
     private bool IsFarFromObstacles(Vector3Int cell, ObstacleMap obstacleMap)
@@ -221,6 +157,82 @@ public class PathFinding
         }
 
         return true;
+    }
+
+    public class PriorityQueue<T>
+    {
+        private List<T> _elements = new List<T>();
+        private System.Func<T, float> _getPriority;
+
+        public PriorityQueue(System.Func<T, float> getPriority)
+        {
+            _getPriority = getPriority;
+        }
+
+        public void Enqueue(T item)
+        {
+            _elements.Add(item);
+            BubbleUp(_elements.Count - 1); // Bubble up the new element to its correct position
+        }
+
+        public T Dequeue()
+        {
+            if (_elements.Count == 0)
+                throw new System.InvalidOperationException("Queue is empty");
+
+            T root = _elements[0];
+            int lastIndex = _elements.Count - 1;
+            _elements[0] = _elements[lastIndex];
+            _elements.RemoveAt(lastIndex);
+            BubbleDown(0); // Restore the heap property
+
+            return root;
+        }
+
+        public int Count => _elements.Count;
+
+        private void BubbleUp(int index)
+        {
+            while (index > 0)
+            {
+                int parentIndex = (index - 1) / 2;
+                if (_getPriority(_elements[index]) < _getPriority(_elements[parentIndex]))
+                {
+                    Swap(index, parentIndex);
+                    index = parentIndex;
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+
+        private void BubbleDown(int index)
+        {
+            int leftChildIndex = 2 * index + 1;
+            int rightChildIndex = 2 * index + 2;
+            int smallestIndex = index;
+
+            if (leftChildIndex < _elements.Count && _getPriority(_elements[leftChildIndex]) < _getPriority(_elements[smallestIndex]))
+                smallestIndex = leftChildIndex;
+
+            if (rightChildIndex < _elements.Count && _getPriority(_elements[rightChildIndex]) < _getPriority(_elements[smallestIndex]))
+                smallestIndex = rightChildIndex;
+
+            if (smallestIndex != index)
+            {
+                Swap(index, smallestIndex);
+                BubbleDown(smallestIndex);
+            }
+        }
+
+        private void Swap(int i, int j)
+        {
+            T temp = _elements[i];
+            _elements[i] = _elements[j];
+            _elements[j] = temp;
+        }
     }
 
 }
