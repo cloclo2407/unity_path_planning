@@ -92,7 +92,7 @@ public class PathFinding
     private List<Node> getNeighbors(Node currentNode, Vector3 goal, ObstacleMap obstacleMap)
     {
         List<Node> neighbors = new List<Node>();
-        float stepSize = 5f; //size of a movement
+        float stepSize = 3f; //size of a movement
         //REPLACE FOR BETTER BUT LONGER PROCESS
         float[] angles = { -45,-25, -15, 0, 15, 25, 45 }; // float[] angles = {-45, -30, -20, -10,  0, 10, 20, 30,  45}; // possible directions
 
@@ -129,8 +129,6 @@ public class PathFinding
 
     private bool IsFarFromObstacles(Vector3Int cell, ObstacleMap obstacleMap)
     {
-        float minDistance = 2f;
-
         List<Vector3Int> surroundingCells = new List<Vector3Int>
     {
         new Vector3Int(cell.x + 1, 0, cell.z),// Right
@@ -147,13 +145,8 @@ public class PathFinding
         {
             if (obstacleMap.traversabilityPerCell.TryGetValue(new Vector2Int(neighbor.x, neighbor.z), out var traversability) &&
                 traversability != ObstacleMap.Traversability.Free) 
-            {
-                float distance = Vector2.Distance(new Vector2(cell.x, cell.z), new Vector2(neighbor.x, neighbor.z));
-
-                if (distance < minDistance)
-                {
-                    return false; 
-                }
+            { 
+                return false;
             }
         }
 
