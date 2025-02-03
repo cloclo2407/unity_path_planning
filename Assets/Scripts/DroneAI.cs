@@ -8,9 +8,9 @@ public class DroneAI : MonoBehaviour
     private DroneController m_Drone;
     private MapManager mapManager;
     private ObstacleMap obstacleMap;
-    private BoxCollider carCollider;
+    private BoxCollider droneCollider;
 
-    private PathFinding pathFinding;
+    private PathFindingDrone pathFindingDrone;
     private ImprovePath improvePath;
 
     public Vector3 target_velocity;
@@ -22,38 +22,32 @@ public class DroneAI : MonoBehaviour
 
     public Rigidbody my_rigidbody;
 
-
     private int currentPathIndex = 1;
     private List<Vector3> path;
-
 
     private void Start()
     {
         this.enabled = true;
-        carCollider = gameObject.transform.Find("Colliders/ColliderBottom").gameObject.GetComponent<BoxCollider>();
-        // get the car controller
+        droneCollider = gameObject.transform.Find("Colliders/ColliderBottom").gameObject.GetComponent<BoxCollider>();
+        // get the drone controller
         m_Drone = GetComponent<DroneController>();
         mapManager = FindFirstObjectByType<GameManagerA1>().mapManager;
 
-        Vector3 grid_size = new Vector3(1, 1, 1) * 1.6f; //can multiply *3 for instance
+        Vector3 grid_size = new Vector3(1, 1, 1) * 2f; //can multiply *3 for instance
         obstacleMap = ObstacleMap.Initialize(mapManager, new List<GameObject>(), grid_size);
         my_rigidbody = GetComponent<Rigidbody>();
-
-        //k_p = 2f;
-        //k_d = 1.5f;
 
         //Get starting position
         Vector3 start_pos = mapManager.GetGlobalStartPosition();
         // Get goal position
         Vector3 goal_pos = mapManager.GetGlobalGoalPosition();
 
-        pathFinding = new PathFinding();
+        pathFindingDrone = new PathFindingDrone();
         improvePath = new ImprovePath();
-        List<Vector3> first_path = pathFinding.a_star_hybrid(start_pos, goal_pos, obstacleMap, gameObject.transform);
+        List<Vector3> first_path = pathFindingDrone.a_star_hybrid(start_pos, goal_pos, obstacleMap, gameObject.transform);
 
         if (first_path.Count > 0)
         {
-            //this.path = improvePath.smoothPath(first_path); // doesn't work well
             this.path = improvePath.smoothPath(first_path);
         }
         else
@@ -63,13 +57,7 @@ public class DroneAI : MonoBehaviour
         // Plan your path here
         Debug.Log("Path length: " + path.Count);
 
-
-
-        // Plot your path to see if it makes sense
-        // Note that path can only be seen in "Scene" window, not "Game" window
-
-
-        float thickness = 0.1f; // Adjust thickness
+        float thickness = 0.2f; // Adjust thickness
         Vector3 offset = Vector3.up * thickness;
 
         for (int i = 0; i < path.Count - 1; i++)
@@ -84,27 +72,6 @@ public class DroneAI : MonoBehaviour
             //Debug.DrawLine(first_path[i] + offset, first_path[i + 1] + offset, Color.red, 10000f);
             //Debug.DrawLine(first_path[i] - offset, first_path[i + 1] - offset, Color.red, 10000f);
         }
-
-        /*
-        RaycastHit hit;
-        float maxRange = 500f;
-        if (Physics.Raycast(transform.position + transform.up, transform.TransformDirection(Vector3.forward), out hit, maxRange))
-        {
-            Vector3 closestObstacleInFront = transform.TransformDirection(Vector3.forward) * hit.distance;
-            Debug.DrawRay(transform.position, closestObstacleInFront, Color.yellow);
-            Debug.Log("Did Hit");
-        }
-
-        // Raycast works as long as the objects are loaded in before hitting Play.
-        // I.e if the map is loaded in from inspector before starting.
-        var transformPosition = transform.position + transform.forward * 20;
-        var transformDirection = transform.TransformDirection(Vector3.left);
-        if (Physics.Raycast(transformPosition, transformDirection, out hit, maxRange))
-        {
-            Vector3 closestObstacleInFront = transformDirection * hit.distance;
-            Debug.DrawRay(transformPosition, closestObstacleInFront, Color.red);
-            Debug.Log("Did Hit");
-        }*/
     }
 
 
@@ -114,11 +81,6 @@ public class DroneAI : MonoBehaviour
         //m_Drone.Move(0.4f * Mathf.Sin(Time.time * 1.9f), 0.1f);
 
         var globalPosition = transform.position;
-
-        //var localPointTraveribility = obstacleMap?.GetLocalPointTraversibility(transform.localPosition);
-        //var globalPointTravesibility = obstacleMap?.GetGlobalPointTravesibility(transform.position);
-
-        // Execute your path here
 
         if (path.Count != 0 && currentPathIndex < path.Count)
         {
@@ -142,7 +104,6 @@ public class DroneAI : MonoBehaviour
             Debug.DrawLine(transform.position, transform.position + desired_acceleration, Color.yellow);
 
             // this is how you control the car
-            //Debug.Log("Steering:" + steering + " Acceleration:" + acceleration);
             m_Car.Move(steering, acceleration, acceleration, 0f);
 
 
