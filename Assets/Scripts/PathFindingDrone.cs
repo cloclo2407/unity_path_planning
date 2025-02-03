@@ -10,26 +10,32 @@ public class PathFindingDrone
     public class Node
     {
         public Vector3 position;
+        public float orientation;
         public float GCost { set; get; }
         public float HCost { get; } // Doesn't need to be changed after initialization
         public float FCost => GCost + HCost;  // Total cost
         public Node parent { get; set; }
 
-        public Node(Vector3 position, float gCost, float hCost, Node parent = null) // Constructor
+        public Node(Vector3 position, float orientation, float gCost, float hCost, Node parent = null) // Constructor
         {
             this.position = position;
+            this.orientation = orientation;
             this.GCost = gCost;
             this.HCost = hCost;
             this.parent = parent;
         }
     }
 
-    public List<Vector3> a_star_hybrid(Vector3 start_pos, Vector3 goal_pos, ObstacleMap obstacleMap)
+    public List<Vector3> a_star_hybrid(Vector3 start_pos, Vector3 goal_pos, ObstacleMap obstacleMap, Transform carTransform)
     {
+        float start_angle = Vector3.SignedAngle(Vector3.left, carTransform.forward, Vector3.up);
+        if (start_angle < 0)
+            start_angle += 360;
 
-        Node startNode = new Node(start_pos, 0, getHeuristic(start_pos, goal_pos));
+        Node startNode = new Node(start_pos, start_angle, 0, getHeuristic(start_pos, goal_pos));
 
         //Create open and close sets
+
         PriorityQueue<Node> openQueue = new PriorityQueue<Node>(n => n.FCost);
         openQueue.Enqueue(startNode);
 
@@ -87,27 +93,21 @@ public class PathFindingDrone
     {
         List<Node> neighbors = new List<Node>();
         float stepSize = 2f; //size of a movement
-        Vector3 cell = currentNode.position;
+        //REPLACE FOR BETTER BUT LONGER PROCESS
+        float[] angles = { -30, -15, 0, 15, 30 }; // float[] angles = {-45, -30, -20, -10,  0, 10, 20, 30,  45}; // possible directions
+        foreach (float angle in angles)
+        {
+            float newOrientation = (currentNode.orientation + angle) % 360;
+            if (newOrientation < 0) newOrientation += 360;
 
-        List<Vector3> possible_neighbors= new List<Vector3>
-        {
-            new Vector3(cell.x + stepSize, 0, cell.z),// Right
-            new Vector3(cell.x - stepSize, 0, cell.z),// Left
-            new Vector3(cell.x, 0, cell.z + stepSize),// Forward
-            new Vector3(cell.x, 0, cell.z - stepSize),// Back
-            new Vector3(cell.x + Mathf.Sqrt(stepSize), 0, cell.z + Mathf.Sqrt(stepSize)),// Forward-right
-            new Vector3(cell.x - Mathf.Sqrt(stepSize), 0, cell.z + Mathf.Sqrt(stepSize)),// Forward-left
-            new Vector3(cell.x + Mathf.Sqrt(stepSize), 0, cell.z - Mathf.Sqrt(stepSize)),// Back-right
-            new Vector3(cell.x - Mathf.Sqrt(stepSize), 0, cell.z - Mathf.Sqrt(stepSize))// Back-left
-        };
-   
-        foreach (Vector3 possible_neighbor in possible_neighbors)
-        {
-            if (IsFarFromObstacles(obstacleMap.WorldToCell(possible_neighbor), obstacleMap))
+            Vector3 newPos = currentNode.position + stepSize * new Vector3(Mathf.Cos(newOrientation * Mathf.Deg2Rad), 0, Mathf.Sin(newOrientation * Mathf.Deg2Rad));
+
+            if (IsFarFromObstacles(obstacleMap.WorldToCell(newPos), obstacleMap))
             {
+
                 float newCost = currentNode.GCost + stepSize;
-                float heuristic = getHeuristic(possible_neighbor, goal);
-                neighbors.Add(new Node(possible_neighbor, newCost, heuristic, currentNode));
+                float heuristic = getHeuristic(newPos, goal);
+                neighbors.Add(new Node(newPos, newOrientation, newCost, heuristic, currentNode));
             }
         }
         return neighbors;

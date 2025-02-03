@@ -5,6 +5,7 @@ using System;
 using Scripts.Vehicle;
 using Scripts.Map;
 using UnityEngine.UIElements;
+using Imported.StandardAssets.Vehicles;
 
 [RequireComponent(typeof(DroneController))]
 public class DroneAI : MonoBehaviour
@@ -15,7 +16,7 @@ public class DroneAI : MonoBehaviour
     private ObstacleMap obstacleMap;
     private BoxCollider droneCollider;
 
-    private PathFindingDrone pathFindingDrone;
+    private PathFindingDrone pathFinding;
     private ImprovePath improvePath;
 
     public Vector3 target_velocity;
@@ -33,23 +34,24 @@ public class DroneAI : MonoBehaviour
     private void Start()
     {
         this.enabled = true;
-        droneCollider = gameObject.transform.Find("Colliders/ColliderBottom").gameObject.GetComponent<BoxCollider>();
+        //droneCollider = gameObject.transform.Find("Colliders/ColliderBottom").gameObject.GetComponent<BoxCollider>();
         // get the drone controller
         m_Drone = GetComponent<DroneController>();
         mapManager = FindFirstObjectByType<GameManagerA1>().mapManager;
 
-        Vector3 grid_size = new Vector3(1, 1, 1) * 2f; //can multiply *3 for instance
+        Vector3 grid_size = new Vector3(1, 1, 1) * 2.5f; //can multiply *3 for instance
         obstacleMap = ObstacleMap.Initialize(mapManager, new List<GameObject>(), grid_size);
         my_rigidbody = GetComponent<Rigidbody>();
 
         //Get starting position
         Vector3 start_pos = mapManager.GetGlobalStartPosition();
+        
         // Get goal position
         Vector3 goal_pos = mapManager.GetGlobalGoalPosition();
 
-        pathFindingDrone = new PathFindingDrone();
+        pathFinding = new PathFindingDrone();
         improvePath = new ImprovePath();
-        List<Vector3> first_path = pathFindingDrone.a_star_hybrid(start_pos, goal_pos, obstacleMap);
+        List<Vector3> first_path = pathFinding.a_star_hybrid(start_pos, goal_pos, obstacleMap, gameObject.transform);
 
         if (first_path.Count > 0)
         {
@@ -74,8 +76,6 @@ public class DroneAI : MonoBehaviour
         for (int i = 0; i < first_path.Count - 1; i++)
         {
             Debug.DrawLine(first_path[i], first_path[i + 1], Color.red, 10000f);
-            //Debug.DrawLine(first_path[i] + offset, first_path[i + 1] + offset, Color.red, 10000f);
-            //Debug.DrawLine(first_path[i] - offset, first_path[i + 1] - offset, Color.red, 10000f);
         }
     }
 
@@ -107,7 +107,7 @@ public class DroneAI : MonoBehaviour
             Debug.DrawLine(transform.position, transform.position + my_rigidbody.linearVelocity, Color.blue);
             Debug.DrawLine(transform.position, transform.position + desired_acceleration, Color.yellow);
 
-            if (Vector3.Distance(target_position, transform.position) < 6f)
+            if (Vector3.Distance(target_position, transform.position) < 3f)
             {
                 currentPathIndex++;
             }
