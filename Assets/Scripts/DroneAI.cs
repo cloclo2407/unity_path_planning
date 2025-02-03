@@ -93,23 +93,19 @@ public class DroneAI : MonoBehaviour
             target_velocity = (target_position - old_target_pos) / Time.fixedDeltaTime;
             old_target_pos = target_position;
 
-            float myK_p = 5f;
-            float myK_d = 4f;
+            float myK_p = 10f;
+            float myK_d = 8f;
 
             // a PD-controller to get desired acceleration from errors in position and velocity
             Vector3 position_error = target_position - transform.position;
             Vector3 velocity_error = target_velocity - my_rigidbody.linearVelocity;
             Vector3 desired_acceleration = myK_p * position_error + myK_d * velocity_error;
 
-            float steering = Vector3.Dot(desired_acceleration, transform.right);
-            float acceleration = Vector3.Dot(desired_acceleration, transform.forward);
+            m_Drone.Move(desired_acceleration.x, desired_acceleration.z);
 
             Debug.DrawLine(target_position, target_position + target_velocity, Color.red);
             Debug.DrawLine(transform.position, transform.position + my_rigidbody.linearVelocity, Color.blue);
             Debug.DrawLine(transform.position, transform.position + desired_acceleration, Color.yellow);
-
-            // this is how you control the car
-            m_Car.Move(steering, acceleration, acceleration, 0f);
 
             if (Vector3.Distance(target_position, transform.position) < 6f)
             {

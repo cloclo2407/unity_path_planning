@@ -106,7 +106,7 @@ public class PathFindingDrone
             if (IsFarFromObstacles(obstacleMap.WorldToCell(possible_neighbor), obstacleMap))
             {
                 float newCost = currentNode.GCost + stepSize;
-                float heuristic = getHeuristic(newPos, goal);
+                float heuristic = getHeuristic(possible_neighbor, goal);
                 neighbors.Add(new Node(possible_neighbor, newCost, heuristic, currentNode));
             }
         }
