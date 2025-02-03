@@ -139,17 +139,11 @@ public class CarAI : MonoBehaviour
             Vector3 velocity_error = target_velocity - my_rigidbody.linearVelocity;
             Vector3 desired_acceleration = myK_p * position_error + myK_d * velocity_error;
 
-            float steering = Vector3.Dot(desired_acceleration, transform.right);
-            float acceleration = Vector3.Dot(desired_acceleration, transform.forward);
+            m_Drone.Move(desired_acceleration.x, desired_acceleration.z);
 
             Debug.DrawLine(target_position, target_position + target_velocity, Color.red);
             Debug.DrawLine(transform.position, transform.position + my_rigidbody.linearVelocity, Color.blue);
-            Debug.DrawLine(transform.position, transform.position + desired_acceleration, Color.yellow);
-
-            // this is how you control the car
-            //Debug.Log("Steering:" + steering + " Acceleration:" + acceleration);
-            m_Car.Move(steering, acceleration, acceleration, 0f);
-            
+            Debug.DrawLine(transform.position, transform.position + desired_acceleration, Color.yellow);            
 
             if (Vector3.Distance(target_position,transform.position) <6f)
             {
