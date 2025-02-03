@@ -5,7 +5,7 @@ using System.Linq;
 using Scripts.Map;
 
 
-public class PathFinding
+public class PathFindingDrone
 {
     public class Node
     {
@@ -16,7 +16,7 @@ public class PathFinding
         public float FCost => GCost + HCost;  // Total cost
         public Node parent { get; set; }
 
-        public Node(Vector3 position, float orientation, float gCost, float hCost, Node parent=null) // Constructor
+        public Node(Vector3 position, float orientation, float gCost, float hCost, Node parent = null) // Constructor
         {
             this.position = position;
             this.orientation = orientation;
@@ -49,7 +49,7 @@ public class PathFinding
             Node currentNode = openQueue.Dequeue();  // Get the lowest FCost node
             openDict.Remove(Vector3Int.RoundToInt(currentNode.position));  // Remove from dictionary
 
-            if (Vector3Int.RoundToInt(currentNode.position) == Vector3Int.RoundToInt(goal_pos) )
+            if (Vector3Int.RoundToInt(currentNode.position) == Vector3Int.RoundToInt(goal_pos))
             {
                 return getPath(currentNode);
             }
@@ -81,7 +81,7 @@ public class PathFinding
             }
         }
         return new List<Vector3>(); // No path has been found
-        
+
     }
 
     private float getHeuristic(Vector3 position, Vector3 goal) // Flying distance
@@ -104,8 +104,8 @@ public class PathFinding
 
             if (IsFarFromObstacles(obstacleMap.WorldToCell(newPos), obstacleMap))
             {
-                
-                float newCost = currentNode.GCost + stepSize ;
+
+                float newCost = currentNode.GCost + stepSize;
                 float heuristic = getHeuristic(newPos, goal);
                 neighbors.Add(new Node(newPos, newOrientation, newCost, heuristic, currentNode));
             }
@@ -144,8 +144,8 @@ public class PathFinding
         foreach (Vector3Int neighbor in surroundingCells)
         {
             if (obstacleMap.traversabilityPerCell.TryGetValue(new Vector2Int(neighbor.x, neighbor.z), out var traversability) &&
-                traversability != ObstacleMap.Traversability.Free) 
-            { 
+                traversability != ObstacleMap.Traversability.Free)
+            {
                 return false;
             }
         }

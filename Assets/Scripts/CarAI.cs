@@ -25,8 +25,8 @@ public class CarAI : MonoBehaviour
     public Vector3 old_target_pos;
     public Vector3 desired_velocity;
 
-    public float k_p = 1.5f;
-    public float k_d = 1.5f;
+    public float K_p = 10f;
+    public float K_d = 5f;
 
     public Rigidbody my_rigidbody;
 
@@ -37,6 +37,7 @@ public class CarAI : MonoBehaviour
 
     private void Start()
     {
+        this.enabled = true;
         carCollider = gameObject.transform.Find("Colliders/ColliderBottom").gameObject.GetComponent<BoxCollider>();
         // get the car controller
         m_Car = GetComponent<CarController>();
@@ -45,6 +46,9 @@ public class CarAI : MonoBehaviour
         Vector3 grid_size = new Vector3(1,1,1)*1.6f; //can multiply *3 for instance
         obstacleMap = ObstacleMap.Initialize(mapManager, new List<GameObject>(), grid_size);
         my_rigidbody = GetComponent<Rigidbody>();
+
+        //k_p = 2f;
+        //k_d = 1.5f;
 
         //Get starting position
         Vector3 start_pos = mapManager.GetGlobalStartPosition();
@@ -58,7 +62,6 @@ public class CarAI : MonoBehaviour
         if (first_path.Count > 0)
         {
             //this.path = improvePath.smoothPath(first_path); // doesn't work well
-            float epsilon = 0.1f;
             this.path = improvePath.smoothPath(first_path);
         }
         else
@@ -128,10 +131,13 @@ public class CarAI : MonoBehaviour
             target_velocity = (target_position - old_target_pos) / Time.fixedDeltaTime;
             old_target_pos = target_position;
 
+            float myK_p = 10f;
+            float myK_d = 8f;
+
             // a PD-controller to get desired acceleration from errors in position and velocity
             Vector3 position_error = target_position - transform.position;
             Vector3 velocity_error = target_velocity - my_rigidbody.linearVelocity;
-            Vector3 desired_acceleration = k_p * position_error + k_d * velocity_error;
+            Vector3 desired_acceleration = myK_p * position_error + myK_d * velocity_error;
 
             float steering = Vector3.Dot(desired_acceleration, transform.right);
             float acceleration = Vector3.Dot(desired_acceleration, transform.forward);

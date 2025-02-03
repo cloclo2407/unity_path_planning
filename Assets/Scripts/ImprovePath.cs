@@ -35,14 +35,14 @@ public class ImprovePath
                 p3 = path[i+2];
             }
 
-            for (float t = 0; t < 1f; t += 0.3f) // Decreasing step will increase number of points
+            for (float t = 0; t < 1f; t += 0.1f) // Decreasing step will increase number of points
             {
                 Vector3 newPoint = catmull_Rom(p0, p1, p2, p3, t);
                 smoothedPath.Add(newPoint);
             }
         }
         smoothedPath.Add(path[n - 1]); // Add last point
-        smoothedPath = simplifyPath(smoothedPath, 0.5f);
+        smoothedPath = simplifyPath(smoothedPath, 0.2f);
 
         return smoothedPath;
     }
