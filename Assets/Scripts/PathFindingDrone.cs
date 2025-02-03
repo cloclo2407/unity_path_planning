@@ -89,7 +89,7 @@ public class PathFindingDrone
         float stepSize = 2f; //size of a movement
         Vector3 cell = currentNode.position;
 
-        List<Vector3> possible_neighbors= new List<Vector3Int>
+        List<Vector3> possible_neighbors= new List<Vector3>
         {
             new Vector3(cell.x + stepSize, 0, cell.z),// Right
             new Vector3(cell.x - stepSize, 0, cell.z),// Left

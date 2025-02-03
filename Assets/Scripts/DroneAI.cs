@@ -49,7 +49,7 @@ public class DroneAI : MonoBehaviour
 
         pathFindingDrone = new PathFindingDrone();
         improvePath = new ImprovePath();
-        List<Vector3> first_path = pathFindingDrone.a_star_hybrid(start_pos, goal_pos, obstacleMap, gameObject.transform);
+        List<Vector3> first_path = pathFindingDrone.a_star_hybrid(start_pos, goal_pos, obstacleMap);
 
         if (first_path.Count > 0)
         {
