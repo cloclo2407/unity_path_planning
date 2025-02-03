@@ -87,21 +87,27 @@ public class PathFindingDrone
     {
         List<Node> neighbors = new List<Node>();
         float stepSize = 2f; //size of a movement
-        //REPLACE FOR BETTER BUT LONGER PROCESS
-        float[] angles = { -30, -15, 0, 15, 30 }; // float[] angles = {-45, -30, -20, -10,  0, 10, 20, 30,  45}; // possible directions
-        foreach (float angle in angles)
+        Vector3 cell = currentNode.position;
+
+        List<Vector3> possible_neighbors= new List<Vector3Int>
         {
-            float newOrientation = (currentNode.orientation + angle) % 360;
-            if (newOrientation < 0) newOrientation += 360;
-
-            Vector3 newPos = currentNode.position + stepSize * new Vector3(Mathf.Cos(newOrientation * Mathf.Deg2Rad), 0, Mathf.Sin(newOrientation * Mathf.Deg2Rad));
-
-            if (IsFarFromObstacles(obstacleMap.WorldToCell(newPos), obstacleMap))
+            new Vector3(cell.x + stepSize, 0, cell.z),// Right
+            new Vector3(cell.x - stepSize, 0, cell.z),// Left
+            new Vector3(cell.x, 0, cell.z + stepSize),// Forward
+            new Vector3(cell.x, 0, cell.z - stepSize),// Back
+            new Vector3(cell.x + Mathf.Sqrt(stepSize), 0, cell.z + Mathf.Sqrt(stepSize)),// Forward-right
+            new Vector3(cell.x - Mathf.Sqrt(stepSize), 0, cell.z + Mathf.Sqrt(stepSize)),// Forward-left
+            new Vector3(cell.x + Mathf.Sqrt(stepSize), 0, cell.z - Mathf.Sqrt(stepSize)),// Back-right
+            new Vector3(cell.x - Mathf.Sqrt(stepSize), 0, cell.z - Mathf.Sqrt(stepSize))// Back-left
+        };
+   
+        foreach (Vector3 possible_neighbor in possible_neighbors)
+        {
+            if (IsFarFromObstacles(obstacleMap.WorldToCell(possible_neighbor), obstacleMap))
             {
-
                 float newCost = currentNode.GCost + stepSize;
                 float heuristic = getHeuristic(newPos, goal);
-                neighbors.Add(new Node(newPos, newOrientation, newCost, heuristic, currentNode));
+                neighbors.Add(new Node(possible_neighbor, newCost, heuristic, currentNode));
             }
         }
         return neighbors;
