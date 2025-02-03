@@ -1,5 +1,10 @@
-﻿using Scripts.Vehicle;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using System;
+using Scripts.Vehicle;
+using Scripts.Map;
+using UnityEngine.UIElements;
 
 [RequireComponent(typeof(DroneController))]
 public class DroneAI : MonoBehaviour
@@ -88,8 +93,8 @@ public class DroneAI : MonoBehaviour
             target_velocity = (target_position - old_target_pos) / Time.fixedDeltaTime;
             old_target_pos = target_position;
 
-            float myK_p = 10f;
-            float myK_d = 8f;
+            float myK_p = 5f;
+            float myK_d = 4f;
 
             // a PD-controller to get desired acceleration from errors in position and velocity
             Vector3 position_error = target_position - transform.position;
@@ -105,7 +110,6 @@ public class DroneAI : MonoBehaviour
 
             // this is how you control the car
             m_Car.Move(steering, acceleration, acceleration, 0f);
-
 
             if (Vector3.Distance(target_position, transform.position) < 6f)
             {
