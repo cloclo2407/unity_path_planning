@@ -36,7 +36,7 @@ public class DroneAI : MonoBehaviour
         m_Drone = GetComponent<DroneController>();
         mapManager = FindFirstObjectByType<GameManagerA1>().mapManager;
 
-        Vector3 grid_size = new Vector3(1, 1, 1) * 2.2f; //can multiply *3 for instance
+        Vector3 grid_size = new Vector3(1, 1, 1) * 2.4f; //can multiply *3 for instance
         obstacleMap = ObstacleMap.Initialize(mapManager, new List<GameObject>(), grid_size);
         my_rigidbody = GetComponent<Rigidbody>();
 

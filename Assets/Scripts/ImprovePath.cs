@@ -60,6 +60,7 @@ public class ImprovePath
             return path;
 
         List<Vector3> simplifiedPath = new List<Vector3>();
+        simplifiedPath.Add(path[0]);
         simplifyRecursive(path, 0, path.Count - 1, epsilon, simplifiedPath);
         simplifiedPath.Add(path[path.Count - 1]); // add last point
 
