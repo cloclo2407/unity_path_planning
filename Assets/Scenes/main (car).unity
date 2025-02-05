@@ -23221,7 +23221,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1004648171}
   - component: {fileID: 1004648170}
-  - component: {fileID: 1004648172}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -23261,21 +23260,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1004648172
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1004648169}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4fe53c485c2844ebbf3dbcedf01d1cf9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_MapManager: {fileID: 0}
-  replayVehiclePrefab: {fileID: 3087797586053569141, guid: a548b49815ebf2c4c95ab37f7d5ab561, type: 3}
-  massReplayKeyword: TrajC_Dro
 --- !u!1 &1005805905
 GameObject:
   m_ObjectHideFlags: 0
@@ -25321,6 +25305,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mapManager: {fileID: 1103886903}
   drawMapGizmo: 0
+  margin: {x: 1, y: 1, z: 1}
   cellScale: {x: 4, y: 4, z: 4}
 --- !u!114 &1103886906
 MonoBehaviour:
@@ -25336,7 +25321,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_MapManager: {fileID: 1103886903}
   replayVehiclePrefab: {fileID: 3087797586053569141, guid: a548b49815ebf2c4c95ab37f7d5ab561, type: 3}
-  massReplayKeyword: Traj
+  massReplayKeyword: 3
 --- !u!1 &1105722606
 GameObject:
   m_ObjectHideFlags: 0

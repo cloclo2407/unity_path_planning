@@ -4543,6 +4543,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1004648171}
   - component: {fileID: 1004648170}
+  - component: {fileID: 1004648172}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -4582,6 +4583,21 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1004648172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1004648169}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fe53c485c2844ebbf3dbcedf01d1cf9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_MapManager: {fileID: 0}
+  replayVehiclePrefab: {fileID: 3624628397461562025, guid: 10bac94d10a9ac646b4e43db304ac31e, type: 3}
+  massReplayKeyword: Traj
 --- !u!1 &1029283512
 GameObject:
   m_ObjectHideFlags: 0
@@ -10792,6 +10808,7 @@ GameObject:
   - component: {fileID: 2033707172}
   - component: {fileID: 2033707171}
   - component: {fileID: 2033707173}
+  - component: {fileID: 2033707174}
   m_Layer: 0
   m_Name: Map
   m_TagString: Untagged
@@ -10816,7 +10833,7 @@ MonoBehaviour:
   startPositions:
   - {x: 127.5, y: 0, z: 11.306268}
   targetPositions:
-  - {x: 22.5, y: 0, z: 7.5}
+  - {x: 22.500002, y: 0, z: 7.5}
   fileName: TerrainB
 --- !u!4 &2033707172
 Transform:
@@ -10851,7 +10868,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mapManager: {fileID: 2033707171}
   drawMapGizmo: 0
+  margin: {x: 1, y: 1, z: 1}
   cellScale: {x: 3, y: 3, z: 3}
+--- !u!114 &2033707174
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2033707170}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fe53c485c2844ebbf3dbcedf01d1cf9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_MapManager: {fileID: 2033707171}
+  replayVehiclePrefab: {fileID: 3624628397461562025, guid: 10bac94d10a9ac646b4e43db304ac31e, type: 3}
+  massReplayKeyword: 3
 --- !u!1 &2040454094
 GameObject:
   m_ObjectHideFlags: 0
