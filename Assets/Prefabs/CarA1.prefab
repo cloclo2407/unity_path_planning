@@ -99,7 +99,7 @@ MonoBehaviour:
     time_array: []
     file_name: 
     json_string: 
-  RecordingOn: 0
+  RecordingOn: 1
   PlaybackOn: 0
   position_list: []
   rotation_list: []

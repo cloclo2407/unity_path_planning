@@ -65,6 +65,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5250475147278001453, guid: 140be9509c10dd4408a9f76e1cf6759a, type: 3}
       insertIndex: -1
       addedObject: {fileID: 149227252028349653}
+    - targetCorrespondingSourceObject: {fileID: 5250475147278001453, guid: 140be9509c10dd4408a9f76e1cf6759a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: -1485642792770626691}
   m_SourcePrefab: {fileID: 100100000, guid: 140be9509c10dd4408a9f76e1cf6759a, type: 3}
 --- !u!1 &6875861423915555555 stripped
 GameObject:
@@ -110,3 +113,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 175b5c7d166df4e7aa3c053a48f8af36, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-1485642792770626691
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6875861423915555555}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a6087a348ea43b4095212edb146dc2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  trajectory_filename: Text/trajectory
+  recordedInfo:
+    position_array: []
+    rotation_array: []
+    time_array: []
+    file_name: 
+    json_string: 
+  RecordingOn: 0
+  PlaybackOn: 0
+  position_list: []
+  rotation_list: []
+  time_list: []
+  current_index: 0
