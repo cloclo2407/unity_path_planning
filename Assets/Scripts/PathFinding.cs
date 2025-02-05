@@ -94,18 +94,19 @@ public class PathFinding
         List<Node> neighbors = new List<Node>();
         float stepSize = 2f; //size of a movement
         //REPLACE FOR BETTER BUT LONGER PROCESS
-        float[] angles = { -30, -15, 0, 15, 30 }; // float[] angles = {-45, -30, -20, -10,  0, 10, 20, 30,  45}; // possible directions
+        float[] angles = { -20,- 15,  -10, 0, 10, 15, 20  }; // float[] angles = {-45, -30, -20, -10,  0, 10, 20, 30,  45}; // possible directions
+
         foreach (float angle in angles)
         {
             float newOrientation = (currentNode.orientation + angle) % 360;
             if (newOrientation < 0) newOrientation += 360;
 
             Vector3 newPos = currentNode.position + stepSize * new Vector3(Mathf.Cos(newOrientation * Mathf.Deg2Rad), 0, Mathf.Sin(newOrientation * Mathf.Deg2Rad));
-
-            if (IsFarFromObstacles(obstacleMap.WorldToCell(newPos), obstacleMap))
+            Vector3Int cell = obstacleMap.WorldToCell(newPos);
+            if (obstacleMap.traversabilityPerCell.TryGetValue(new Vector2Int(cell.x, cell.z), out var traversability) &&
+                traversability == ObstacleMap.Traversability.Free && IsFarFromObstacles(obstacleMap.WorldToCell(newPos), obstacleMap))
             {
-                
-                float newCost = currentNode.GCost + stepSize ;
+                float newCost = currentNode.GCost + stepSize;
                 float heuristic = getHeuristic(newPos, goal);
                 neighbors.Add(new Node(newPos, newOrientation, newCost, heuristic, currentNode));
             }
