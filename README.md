@@ -1,6 +1,6 @@
 # 🚗🚁 Unity Autonomous Navigation — Hybrid A* for Car and Drone
 
-This project showcases autonomous navigation in Unity3D using path planning and control techniques for both a **car** and a **drone**. It was developed as part of an assignment from the KTH course DD2438 on vehicle motion models and navigation in partially constrained environments.
+This project showcases autonomous navigation in Unity3D using path planning and control techniques for both a **car** and a **drone**. It was developed as part of a university project on vehicle motion models and navigation in partially constrained environments.
 
 The objective was to plan and execute efficient paths through unknown (but fully accessible) maps using realistic models, and complete the journey from start to goal **as quickly as possible**, considering only **driving time**.
 
@@ -74,6 +74,15 @@ The objective was to plan and execute efficient paths through unknown (but fully
 
 ---
 
+## 📘 Course Information
+
+This project was developed for **Assignment 2** of the course  
+**DD2438 – Autonomous Agents and Multi-Agent Systems** at **KTH Royal Institute of Technology**.
+
+The Unity environment, including vehicle models and map assets, was provided as part of the assignment.  
+Our work focused on implementing custom path planning, coordination strategies, and real-time collision avoidance.
+
+---
 
 ## 👤 Authors
 
