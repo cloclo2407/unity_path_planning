@@ -76,7 +76,7 @@ The objective was to plan and execute efficient paths through unknown (but fully
 
 ## 📘 Course Information
 
-This project was developed for **Assignment 2** of the course  
+This project was developed for **Assignment 1** of the course  
 **DD2438 – Autonomous Agents and Multi-Agent Systems** at **KTH Royal Institute of Technology**.
 
 The Unity environment, including vehicle models and map assets, was provided as part of the assignment.  
